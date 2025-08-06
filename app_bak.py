@@ -70,10 +70,6 @@ def login():
     form = LoginForm()
     error = None
 
-    # if request.method == "POST":
-    #     username = request.form["username"]
-    #     password = request.form["password"]
-
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
