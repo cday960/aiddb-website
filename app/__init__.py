@@ -16,7 +16,6 @@ def create_app():
     load_dotenv()
     app = Flask(__name__)
     app.config.from_object(Config)
-    print("\n\n\nSecret key!: ", Config.SECRET_KEY)
 
     # Init extensions
     session.init_app(app)

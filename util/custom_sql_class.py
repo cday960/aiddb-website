@@ -1,4 +1,6 @@
 from typing import List
+
+# from pyodbc import DatabaseError
 import pyodbc
 import os
 import logging
@@ -7,6 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 # logging.basicConfig(filename="web.log")
 # username = os.getenv("DB_USERNAME")
 # password = os.getenv("DB_PASSWORD")
@@ -48,7 +51,7 @@ class SQLConnection:
                     "Failed to connect to database: No credentials provided."
                 )
             self.connection = pyodbc.connect(conn_str)
-            print(f"Connected to {self.database} on {self.server}.")
+            logger.info(f"Connected to {self.database} on {self.server}.")
             return True
         except Exception as e:
             logger.exception("Database connection failed.")
@@ -57,7 +60,7 @@ class SQLConnection:
     def close(self):
         if self.connection:
             self.connection.close()
-            print("Disconnected.")
+            logger.info("Disconnected")
 
     def __enter__(self):
         self.connect()
@@ -75,8 +78,8 @@ class SQLConnection:
         :param params: Extra parameters to pass to pyodbc.cursor.execute()
         """
         if not self.connection:
-            print("Not connected")
-            return []
+            logger.exception("Database query failed")
+            raise ConnectionError("Not connected to database")
 
         query = query[5:]  # strip "--sql" prefix for syntax highlighting
 
@@ -85,7 +88,7 @@ class SQLConnection:
             if params:
                 cursor.execute(query, params)
             else:
-                print("EXECUTING!")
+                logger.info("Executing!")
                 cursor.execute(query)
 
             if query.strip().upper().startswith("SELECT"):
@@ -96,8 +99,8 @@ class SQLConnection:
                 print("whoa there buddy calm down. none of that yet")
                 return []
         except Exception as e:
-            print(f"Error executing query: {e}")
-            return []
+            logger.exception(f"Error while executing query: {e}")
+            raise pyodbc.DatabaseError("Query execution failed") from e
 
 
 class SQLUtilities(SQLConnection):

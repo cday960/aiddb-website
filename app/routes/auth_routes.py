@@ -60,7 +60,6 @@ def index():
         query = """--sql
             select top 10
                 psn.personID,
-                psn.stateID,
                 psn.studentNumber,
                 idnt.lastName,
                 idnt.firstName
@@ -83,10 +82,13 @@ def index():
 
         result = db.query(query)
 
+        for n in result:
+            print(n)
+
         end_time = time.time()
         query_running_time = end_time - start_time
 
-        headers = ["Person ID", "State ID", "Student Number", "Last Name", "First Name"]
+        headers = ["Person ID", "Student Number", "Last Name", "First Name"]
 
     return render_template(
         "new.html", results=result, headers=headers, time=query_running_time
