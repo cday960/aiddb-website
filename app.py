@@ -4,6 +4,7 @@ import datetime
 import os
 from flask import Flask, render_template, request, redirect, session, url_for
 from util.custom_sql_class import SQLConnection, SQLUtilities
+from util.crypto_utils import encrypt_string, decrypt_string
 from typing import List
 from flask_session import Session
 from cryptography.fernet import Fernet
@@ -21,10 +22,6 @@ app.config["SESSION_USE_SIGNER"] = True  # Adds HMAC sig to session cookie
 app.config["SESSION_FILE_DIR"] = os.path.join(app.root_path, "flask_session")
 Session(app)
 
-# Load decryption key for db_password
-load_dotenv()
-fernet = Fernet(str(os.getenv("FERNET_KEY")))
-
 
 @app.route("/")
 def index():
@@ -33,9 +30,7 @@ def index():
 
     db = SQLUtilities(server="aiddb", database="Columbia")
     db.username = session["db_username"]
-    db.password = fernet.decrypt(session["db_password"].encode()).decode()
-
-    # print("Username: ", session["db_username"])
+    db.password = decrypt_string(session["db_password"])
 
     with db:
         query = """--sql
@@ -89,8 +84,7 @@ def login():
             if db.connect():
                 print("Redirecting!")
                 session["db_username"] = username
-                session["db_password"] = fernet.encrypt(password.encode()).decode()
-                print(f"db_password:\n\t{session["db_password"]}")
+                session["db_password"] = encrypt_string(password)
                 session.permanent = True
                 return redirect(url_for("index"))
             else:
