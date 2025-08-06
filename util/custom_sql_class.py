@@ -44,15 +44,12 @@ class SQLConnection:
                 raise ConnectionError(
                     "Failed to connect to database: No credentials provided."
                 )
-                # return False
             self.connection = pyodbc.connect(conn_str)
             print(f"Connected to {self.database} on {self.server}.\n")
             return True
         except Exception as e:
             print(f"Error connection to db: {e}")
             raise ConnectionError("Failed to connect to database.")
-            # return False
-            # return e
 
     def close(self):
         if self.connection:
@@ -60,8 +57,7 @@ class SQLConnection:
             print("\nDisconnected.")
 
     def __enter__(self):
-        if not self.connect():
-            raise ConnectionError("Failed to connect to database.")
+        self.connect()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
