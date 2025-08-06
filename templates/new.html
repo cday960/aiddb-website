@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="test-container">
+	<h3>static page</h3>
+	<p>The current time is: <span id="time"></span></p>
+	<button onclick="toggleDarkMode('test-container')">Toggle Dark Mode (div)</button>
+	<button onclick="toggleDarkMode('body')">Toggle Dark Mode (body)</button>
+
+	{% if results %}
+	<table style="margin-top: 10px;">
+		<thead>
+			<tr>
+				{% for col in headers %}
+				<th>{{ col }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in results %}
+			<tr>
+				{% for cell in row %}
+				<td>{{ cell }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<p style="text-align:center;">No results to show.</p>
+	{% endif %}
+</div>
+{% endblock %}
