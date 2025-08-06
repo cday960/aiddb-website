@@ -1,10 +1,12 @@
 from typing import List
 import pyodbc
 import os
+import logging
 from dotenv import load_dotenv
 
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 # username = os.getenv("DB_USERNAME")
 # password = os.getenv("DB_PASSWORD")
 
@@ -48,7 +50,7 @@ class SQLConnection:
             print(f"Connected to {self.database} on {self.server}.\n")
             return True
         except Exception as e:
-            print(f"Error connection to db: {e}")
+            logger.exception("Database connection failed.")
             raise ConnectionError("Failed to connect to database.")
 
     def close(self):
