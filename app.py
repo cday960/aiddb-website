@@ -6,11 +6,24 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from util.custom_sql_class import SQLConnection, SQLUtilities
 from typing import List
 from flask_session import Session
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
 
 
 app = Flask(__name__)
-app.secret_key = "test_secret_key"
+app.secret_key = os.getenv("APP_SECRET")
 app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(minutes=5)
+
+# Config for storing session data
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_USE_SIGNER"] = True  # Adds HMAC sig to session cookie
+app.config["SESSION_FILE_DIR"] = os.path.join(app.root_path, "flask_session")
+Session(app)
+
+# Load decryption key for db_password
+load_dotenv()
+fernet = Fernet(str(os.getenv("FERNET_KEY")))
 
 
 @app.route("/")
@@ -19,9 +32,10 @@ def index():
         return redirect(url_for("login"))
 
     db = SQLUtilities(server="aiddb", database="Columbia")
-    print("Username: ", session["db_username"])
     db.username = session["db_username"]
-    db.password = session["db_password"]
+    db.password = fernet.decrypt(session["db_password"].encode()).decode()
+
+    # print("Username: ", session["db_username"])
 
     with db:
         query = """--sql
@@ -53,12 +67,8 @@ def index():
         end_time = time.time()
         query_running_time = end_time - start_time
 
-        # for n in result:
-        #     print(n)
-
         headers = ["Person ID", "State ID", "Student Number", "Last Name", "First Name"]
 
-    # return render_template("index.html", results=result, headers=headers)
     return render_template(
         "new.html", results=result, headers=headers, time=query_running_time
     )
@@ -70,9 +80,8 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        # print("Username: ", username, " | Password: ", password)
 
-        # Try to connecto using provided info
+        # Try to connect using provided info
         try:
             db = SQLConnection(server="aiddb", database="Columbia")
             db.username = username
@@ -80,7 +89,8 @@ def login():
             if db.connect():
                 print("Redirecting!")
                 session["db_username"] = username
-                session["db_password"] = password
+                session["db_password"] = fernet.encrypt(password.encode()).decode()
+                print(f"db_password:\n\t{session["db_password"]}")
                 session.permanent = True
                 return redirect(url_for("index"))
             else:
@@ -88,6 +98,12 @@ def login():
         except Exception as e:
             error = f"Error: {str(e)}"
     return render_template("login.html", error=error)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":

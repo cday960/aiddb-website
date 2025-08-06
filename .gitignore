@@ -1,8 +1,8 @@
 .venv
 .env
 .eslintrc.js
-node_modules
+node_modules/
 eslint.config.js
 Session.vim
-flask_session
-**/__pycache__/
+flask_session/
+util/__pycache__/
