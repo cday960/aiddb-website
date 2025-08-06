@@ -5,6 +5,7 @@ import os
 from flask import Flask, render_template, request, redirect, session, url_for
 from util.custom_sql_class import SQLConnection, SQLUtilities
 from util.crypto_utils import encrypt_string, decrypt_string
+from config import Config
 from typing import List
 from flask_session import Session
 from cryptography.fernet import Fernet
@@ -13,13 +14,9 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET")
-app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(minutes=5)
 
-# Config for storing session data
-app.config["SESSION_TYPE"] = "filesystem"
-app.config["SESSION_PERMANENT"] = True
-app.config["SESSION_USE_SIGNER"] = True  # Adds HMAC sig to session cookie
-app.config["SESSION_FILE_DIR"] = os.path.join(app.root_path, "flask_session")
+
+app.config.from_object(Config)
 Session(app)
 
 
