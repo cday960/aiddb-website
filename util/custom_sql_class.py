@@ -16,8 +16,6 @@ class SQLConnection:
         database="Columbia",
         username=None,
         password=None,
-        # username=os.getenv("DB_USERNAME"),
-        # password=os.getenv("DB_PASSWORD"),
     ):
         self.server = server
         self.database = database
@@ -33,7 +31,6 @@ class SQLConnection:
         conn_str = ""
         try:
             if self.username and self.password:
-                # conn_str = f"DRIVER=FreeTDS;DSN=Live_DB;UID={username};PWD={password};"
                 conn_str = (
                     f"DRIVER=FreeTDS;"
                     f"SERVER={self.server};"
@@ -44,13 +41,17 @@ class SQLConnection:
                     f"TDS_Version=8.0;"
                 )
             else:
-                return False
+                raise ConnectionError(
+                    "Failed to connect to database: No credentials provided."
+                )
+                # return False
             self.connection = pyodbc.connect(conn_str)
             print(f"Connected to {self.database} on {self.server}.\n")
             return True
         except Exception as e:
             print(f"Error connection to db: {e}")
-            return False
+            raise ConnectionError("Failed to connect to database.")
+            # return False
             # return e
 
     def close(self):

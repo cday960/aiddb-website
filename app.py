@@ -1,12 +1,16 @@
 import pyodbc
 import time
+import datetime
+import os
 from flask import Flask, render_template, request, redirect, session, url_for
 from util.custom_sql_class import SQLConnection, SQLUtilities
 from typing import List
+from flask_session import Session
 
 
 app = Flask(__name__)
 app.secret_key = "test_secret_key"
+app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(minutes=5)
 
 
 @app.route("/")
@@ -73,16 +77,11 @@ def login():
             db = SQLConnection(server="aiddb", database="Columbia")
             db.username = username
             db.password = password
-            # with SQLUtilities(
-            #     server="aiddb",
-            #     database="Columbia",
-            #     username=username,
-            #     password=password,
-            # ) as db:
             if db.connect():
                 print("Redirecting!")
                 session["db_username"] = username
                 session["db_password"] = password
+                session.permanent = True
                 return redirect(url_for("index"))
             else:
                 error = "Login failed. Please check credentials."
