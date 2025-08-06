@@ -25,9 +25,12 @@ def index():
     if "db_username" not in session or "db_password" not in session:
         return redirect(url_for("login"))
 
-    db = SQLUtilities(server="aiddb", database="Columbia")
-    db.username = session["db_username"]
-    db.password = decrypt_string(session["db_password"])
+    db = SQLUtilities(
+        server="aiddb",
+        database="Columbia",
+        username=session["db_username"],
+        password=decrypt_string(session["db_password"]),
+    )
 
     with db:
         query = """--sql
@@ -75,9 +78,12 @@ def login():
 
         # Try to connect using provided info
         try:
-            db = SQLConnection(server="aiddb", database="Columbia")
-            db.username = username
-            db.password = password
+            db = SQLUtilities(
+                server="aiddb",
+                database="Columbia",
+                username=username,
+                password=password,
+            )
             if db.connect():
                 print("Redirecting!")
                 session["db_username"] = username
