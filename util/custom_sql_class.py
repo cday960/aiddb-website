@@ -11,8 +11,6 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 # logging.basicConfig(filename="web.log")
-# username = os.getenv("DB_USERNAME")
-# password = os.getenv("DB_PASSWORD")
 
 
 class SQLConnection:

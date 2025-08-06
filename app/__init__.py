@@ -17,7 +17,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Init extensions
+    # Bind session and csrf tokens to the app
     session.init_app(app)
     csrf.init_app(app)
 
