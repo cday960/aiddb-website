@@ -6,10 +6,12 @@ load_dotenv()
 fernet = Fernet(str(os.getenv("FERNET_KEY")))
 
 
-def encrypt_string(value: str) -> str:
+def encrypt_string(value: str | None) -> str:
     """
     Encrypts given str using Fernet key from env varaible
     """
+    if not value:
+        raise AttributeError("String is of type None, could not encrypt")
     return fernet.encrypt(value.encode()).decode()
 
 

@@ -1,15 +1,11 @@
-import pyodbc
 import time
-import datetime
 import os
 from flask import Flask, render_template, request, redirect, session, url_for
+from forms.login_form import LoginForm
 from util.custom_sql_class import SQLConnection, SQLUtilities
 from util.crypto_utils import encrypt_string, decrypt_string
 from config import Config
-from typing import List
 from flask_session import Session
-from cryptography.fernet import Fernet
-from dotenv import load_dotenv
 
 
 app = Flask(__name__)
@@ -71,10 +67,16 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    form = LoginForm()
     error = None
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+
+    # if request.method == "POST":
+    #     username = request.form["username"]
+    #     password = request.form["password"]
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
 
         # Try to connect using provided info
         try:
@@ -94,7 +96,8 @@ def login():
                 error = "Login failed. Please check credentials."
         except Exception as e:
             error = f"Error: {str(e)}"
-    return render_template("login.html", error=error)
+
+    return render_template("login.html", form=form, error=error)
 
 
 @app.route("/logout")

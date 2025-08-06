@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename="web.log")
+# logging.basicConfig(filename="web.log")
 # username = os.getenv("DB_USERNAME")
 # password = os.getenv("DB_PASSWORD")
 
@@ -48,7 +48,7 @@ class SQLConnection:
                     "Failed to connect to database: No credentials provided."
                 )
             self.connection = pyodbc.connect(conn_str)
-            print(f"Connected to {self.database} on {self.server}.\n")
+            print(f"Connected to {self.database} on {self.server}.")
             return True
         except Exception as e:
             logger.exception("Database connection failed.")
@@ -57,7 +57,7 @@ class SQLConnection:
     def close(self):
         if self.connection:
             self.connection.close()
-            print("\nDisconnected.")
+            print("Disconnected.")
 
     def __enter__(self):
         self.connect()
@@ -85,7 +85,7 @@ class SQLConnection:
             if params:
                 cursor.execute(query, params)
             else:
-                print("\n\tEXECUTING!\n")
+                print("EXECUTING!")
                 cursor.execute(query)
 
             if query.strip().upper().startswith("SELECT"):

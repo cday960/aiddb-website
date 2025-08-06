@@ -4,18 +4,25 @@
 <div class="container mt-5">
 	<h2>Login to Database</h2>
 	<form method="POST">
+		{{ form.hidden_tag() }}
 		<div class="mb-3">
-			<label for="username" class="form-label">DB Username</label>
-			<input type="text" class="form-control" id="username" name="username" required />
+			{{ form.csrf_token }}
+			{% set username_label = form.username.label(class="form-label") %}
+			{{ username_label }}
+			{% set username_form = form.username(class="form-control") %}
+			{{ username_form }}
 		</div>
 		<div class="mb-3">
-			<label for="password" class="form-label">DB Password</label>
-			<input type="password" class="form-control" id="password" name="password" required />
+			{% set password_label = form.password.label(class="form-label") %}
+			{{ pasword_label }}
+			{% set password_form = form.password(class="form-control") %}
+			{{ password_form }}
 		</div>
 		{% if error %}
 		<div class="alert alert-danger">{{ error }}</div>
 		{% endif %}
-		<button type="submit" class="btn btn-primary">Login</button>
+		{% set submit_button = form.submit(class="btn btn-primary") %}
+		{{ submit_button }}
 	</form>
 </div>
 
