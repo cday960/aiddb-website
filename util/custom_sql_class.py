@@ -68,7 +68,7 @@ class SQLConnection:
         self.close()
 
     # Executes the query and returns the result which is a list of rows
-    def query(self, query, params=None) -> List[pyodbc.Row]:
+    def query(self, query, strip=None, params=None) -> List[pyodbc.Row]:
         """
         Executes the query and returns a list of rows from the result.
 
@@ -79,7 +79,9 @@ class SQLConnection:
             logger.exception("Database query failed")
             raise ConnectionError("Not connected to database")
 
-        query = query[5:]  # strip "--sql" prefix for syntax highlighting
+        if strip == True:
+            logger.info("Stripping SQL Query...")
+            query = query[5:]  # strip "--sql" prefix for syntax highlighting
 
         try:
             cursor = self.connection.cursor()

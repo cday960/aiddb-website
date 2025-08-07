@@ -14,3 +14,7 @@ class Config:
     SESSION_PERMANENT = False
     # SESSION_FILE_DIR = os.path.join(os.path.dirname(__file__), "flask_session")
     WTF_CSRF_ENABLED = True
+    SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_HTTPONLY = True

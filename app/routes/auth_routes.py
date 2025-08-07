@@ -80,7 +80,7 @@ def index():
 
         start_time = time.time()
 
-        result = db.query(query)
+        result = db.query(query, strip=True)
 
         for n in result:
             print(n)
