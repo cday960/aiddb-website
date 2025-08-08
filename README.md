@@ -38,7 +38,11 @@ It decrypts and encrypts strings using the fernet key. The reason it has it's ow
 ```
 password = fernet.decrypt(session["db_password"].encode()).decode()
 ```
-every single time. Instead with this it is just `password = decrypt_string(session["db_password"])`, much nicer. Plus this isolates all encryption logic so if something with that breaks we don't have to dig through all of the route files to find the problem.
+every single time. Instead with this it is just
+```
+password = decrypt_string(session["db_password"])
+```
+which is much nicer. Plus this isolates all encryption logic so if something with that breaks we don't have to dig through all of the route files to find the problem.
 
 #### `custom_sql_class.py`
 Handling SQL connections with pyodbc is kind of a pain, so I wrote a class that does it automatically. It defaults to `aiddb@Columbia` unless a different server and db are provided. It should automatically connect and disconnect, as well as catch query errors and throw them as a `ConnectionError` consistently instead of a bunch of different types of exceptions. Right now, and for the forseeable future, it can only run `SELECT` queries, and will yell at you for trying anything else. I don't see many use cases for modifications to the DB through an automatted process on the webapp, but that could change. It has the proper execution line in there, but it's commented out.

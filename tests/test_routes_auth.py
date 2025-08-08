@@ -1,6 +1,10 @@
 from unittest.mock import MagicMock, patch
 from util.crypto_utils import encrypt_string, decrypt_string
 
+"""
+TODO:
+    - Write test for logout route
+"""
 
 def test_login_get(client):
     response = client.get("/login")
