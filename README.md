@@ -23,11 +23,27 @@ The render function is easy, first argument is the html file you want from `webs
 
 Structured forms are how user input is sanitized and trusted. This webapp utilizes Flask_WTF which lets us integrate WTForms in Flask. WTForms is a simple data validation library to make sure users aren't putting js scripts into their username box, among other nefarious things.
 
-Forms are established in `website/app/forms`, and each form will get a new file. In `login_form.py` there is a class, `LoginForm`, which extends the `FlaskForm` class. Then the attributes of the class are just whatever fields you want that form to have. Since this is a login form we need a username, password, and submit button. Username is a normal text field, so we use the `StringField`, for password we don't want the characters to be uncensored on screen so we use the `PasswordField` object, etc. All field objects are listed in great length on the [FlaskWTF docs](https://flask-wtf.readthedocs.io/en/1.2.x/#:~:text=Flask%2DWTF%20%E2%80%94%20Flask%2DWTF,Version%200.10.3).
+##### Field Objects
+Forms are established in `website/app/forms`, and each form will get a new file. In `login_form.py` there is a class, `LoginForm`, which extends the `FlaskForm` class. Then the attributes of the class are just whatever fields you want that form to have. 
+Since this is a login form we need a username, password, and submit button. 
+- Username is a normal text field, so we use the `StringField`.
+- Password, we want the characters hidden on screen so we use the `PasswordField` object, etc. 
+- Submit button, `SubmitField` object packages the form data into headers before resubmitting the request to the url of the page it is on. The `if` block only runs if the data is validated (the button press is what sent the request).
+All field objects are listed in great length on the [FlaskWTF docs](https://flask-wtf.readthedocs.io/en/1.2.x/#:~:text=Flask%2DWTF%20%E2%80%94%20Flask%2DWTF,Version%200.10.3).
 
+##### Validators
+Validators verify that the input fits a set of criteria based off what validator object is used. The `DataRequired` object ensures the field is not empty on submit. More specifically, it checks that `form.<field>.data` exists. This is important since in the `if` block in `app/routes/auth_routes.py` we assign username and password to the form data, which wouldn't be possible if the login fields were left empty. Validators should always be used.
+- [Validator Docs](https://wtforms.readthedocs.io/en/2.3.x/validators/)
+
+##### Rendering in HTML
 Then those forms are imported into the routes file to be used, and passed to the `render_template` function so it can be displayed on the page. Again looking at `login.html` we use jinja templating (wrap python code in a `{{ ... }}` or `{% ... %}` block) and place `form.username.label` and `form.username` in the html file. The class parameter is just for styling using bootstrapcss.
 
 Every single form should (I hope...) follow this structure with little deviation.
+
+##### Jinja
+- [Official Docs](https://jinja.palletsprojects.com/en/stable/)
+- [GeeksForGeeks article](https://www.geeksforgeeks.org/python/templating-with-jinja2-in-flask/)
+Official docs are good for syntax, gfg article lists all info you should need to make new pages for this webapp.
 
 ### Utility Files
 
@@ -45,7 +61,15 @@ password = decrypt_string(session["db_password"])
 which is much nicer. Plus this isolates all encryption logic so if something with that breaks we don't have to dig through all of the route files to find the problem.
 
 #### `custom_sql_class.py`
-Handling SQL connections with pyodbc is kind of a pain, so I wrote a class that does it automatically. It defaults to `aiddb@Columbia` unless a different server and db are provided. It should automatically connect and disconnect, as well as catch query errors and throw them as a `ConnectionError` consistently instead of a bunch of different types of exceptions. Right now, and for the forseeable future, it can only run `SELECT` queries, and will yell at you for trying anything else. I don't see many use cases for modifications to the DB through an automatted process on the webapp, but that could change. It has the proper execution line in there, but it's commented out.
+Handling SQL connections with pyodbc is kind of a pain, so I wrote a class that does it automatically. It defaults to `aiddb@Columbia` unless a different server and db are provided. 
+
+It automatically connects and disconnects, as well as catches query errors and throw them as a `ConnectionError` consistently instead of a bunch of different types of exceptions.
+
+You can manually call the connect function to test user login info, or just create the object and let it connect itself, it makes no difference.
+
+In the future I would like to include functionality to have multiple databases in the `SQLConnection` object, so user info would be saved in the session and the list of databases is stored in the web db. Then any database the user has access to can be accessed without having to login again.
+
+Right now, and for the forseeable future, it can only run `SELECT` queries, and will yell at you for trying anything else (it prints a warning and returns an empty list). I don't see many use cases for modifications to the DB through an automatted process on the webapp, but that could change. It has the proper execution line in there, but it's commented out.
 
 ---
 
@@ -64,6 +88,8 @@ These need to be sent over teams, obviously cannot host them on a repo due to se
 
 Config object:
     - The config object is loaded from `website/config.py` and then applied. Refer to the configuration section for information on how the object works.
+
+##### 
 
 ### Starting Dev Environment
 
