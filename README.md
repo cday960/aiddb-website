@@ -1,3 +1,4 @@
+# AID DB Internal Website
 ## Logic Structure
 This app follows the blueprint factory design paradigm. Each "group" of routes, or pages, is broken up into different files. Those different files are the "blueprints" for those routes. Then the "factory", or `app/__init__.py` builds the app from the blueprints.
 
@@ -11,7 +12,6 @@ These blueprints are then utilized in `website/app/__init__.py`, specifically `a
 
 
 ### Routes
-
 Ok well how are the pages actually rendered? Inside of the routes files, there are functions with decorators above them (`@auth_bp.route("/login", methods=["GET", "POST"])`) which is responsible for sending the http file to the end user. The first argument `"/login"` is the url of that page, so the function below it (`login()`) will send that page to `/login`. The second argument is the type of request that is made. Since this is a page with a form it needs both `GET` and `POST`.
 
 The contents of the function is responsible for sending the appropriate data with the page as it is requested. For example the login page starts off with checking for a validated form, if there isn't one (the user has not submitted their login info yet) then it returns the render function.
@@ -20,10 +20,9 @@ The render function is easy, first argument is the html file you want from `webs
 
 
 ### Forms
-
 Structured forms are how user input is sanitized and trusted. This webapp utilizes Flask_WTF which lets us integrate WTForms in Flask. WTForms is a simple data validation library to make sure users aren't putting js scripts into their username box, among other nefarious things.
 
-##### Field Objects
+#### Field Objects
 Forms are established in `website/app/forms`, and each form will get a new file. In `login_form.py` there is a class, `LoginForm`, which extends the `FlaskForm` class. Then the attributes of the class are just whatever fields you want that form to have. 
 Since this is a login form we need a username, password, and submit button. 
 - Username is a normal text field, so we use the `StringField`.
@@ -31,11 +30,11 @@ Since this is a login form we need a username, password, and submit button.
 - Submit button, `SubmitField` object packages the form data into headers before resubmitting the request to the url of the page it is on. The `if` block only runs if the data is validated (the button press is what sent the request).
 All field objects are listed in great length on the [FlaskWTF docs](https://flask-wtf.readthedocs.io/en/1.2.x/#:~:text=Flask%2DWTF%20%E2%80%94%20Flask%2DWTF,Version%200.10.3).
 
-##### Validators
+#### Validators
 Validators verify that the input fits a set of criteria based off what validator object is used. The `DataRequired` object ensures the field is not empty on submit. More specifically, it checks that `form.<field>.data` exists. This is important since in the `if` block in `app/routes/auth_routes.py` we assign username and password to the form data, which wouldn't be possible if the login fields were left empty. Validators should always be used.
 - [Validator Docs](https://wtforms.readthedocs.io/en/2.3.x/validators/)
 
-##### Rendering in HTML
+#### Rendering in HTML
 Then those forms are imported into the routes file to be used, and passed to the `render_template` function so it can be displayed on the page. Again looking at `login.html` we use jinja templating (wrap python code in a `{{ ... }}` or `{% ... %}` block) and place `form.username.label` and `form.username` in the html file. The class parameter is just for styling using bootstrapcss.
 
 Every single form should (I hope...) follow this structure with little deviation.
@@ -46,7 +45,6 @@ Every single form should (I hope...) follow this structure with little deviation
 Official docs are good for syntax, gfg article lists all info you should need to make new pages for this webapp.
 
 ### Utility Files
-
 Ok this one is fun. In `website/util/` there are files that are used throughout the rest of the app. The two in there right now handle all encryption/decryption logic and SQL connections.
 
 #### `crypto_utils.py`
