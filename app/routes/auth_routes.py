@@ -1,6 +1,8 @@
 import time
 from flask import Blueprint, render_template, redirect, session, url_for
 from app.forms.login_form import LoginForm
+from app.services.db_service import list_people
+from app.services.session_db import get_db
 from util.custom_sql_class import SQLConnection, SQLUtilities
 from util.crypto_utils import encrypt_string, decrypt_string
 
@@ -49,12 +51,7 @@ def index():
     if "db_username" not in session or "db_password" not in session:
         return redirect(url_for("auth.login"))
 
-    db = SQLUtilities(
-        server="aiddb",
-        database="Columbia",
-        username=session["db_username"],
-        password=decrypt_string(session["db_password"]),
-    )
+    db = get_db()
 
     with db:
         query = """--sql
@@ -78,19 +75,21 @@ def index():
                 and psn.studentNumber is not null;
         """
 
-        start_time = time.time()
-
-        # result = db.query(query, strip=True)
         result, headers = db.query_with_columns(query, strip=True)
 
         for n in result:
             print(n)
 
-        end_time = time.time()
-        query_running_time = end_time - start_time
+    return render_template("manual_query.html", results=result, headers=headers)
 
-        # headers = ["Person ID", "Student Number", "Last Name", "First Name"]
 
-    return render_template(
-        "new.html", results=result, headers=headers, time=query_running_time
-    )
+@auth_bp.route("/service")
+def using_service():
+    if "db_username" not in session or "db_password" not in session:
+        return redirect(url_for("auth.login"))
+
+    result, headers = list_people()
+    for n in result:
+        print(n)
+
+    return render_template("manual_query.html", results=result, headers=headers)

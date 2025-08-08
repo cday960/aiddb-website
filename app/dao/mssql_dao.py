@@ -21,7 +21,7 @@ def get_top_people(db, limit: int = 10):
         psn.personID,
         psn.studentNumber,
         idnt.lastName,
-        idnt.firstName,
+        idnt.firstName
     from Enrollment as enrl
     join Calendar as cal
         on cal.calendarID = enrl.calendarID
@@ -33,7 +33,7 @@ def get_top_people(db, limit: int = 10):
     join [Identity] as idnt
         on psn.currentIdentityID = idnt.identityID
     where enrl.serviceType = 'P'
-    order by psn.personID;
+    and psn.studentNumber is not null;
     """
 
     return db.query_with_columns(sql)

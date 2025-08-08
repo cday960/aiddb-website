@@ -76,7 +76,7 @@ Right now, and for the forseeable future, it can only run `SELECT` queries, and 
 ### app/
 This houses the majority of the code. All html pages, python rendering functions, javascript code, css, and forms go here.
 
-##### `__init__.py`
+#### `__init__.py`
 This houses the definition/ configuratino function for the Flask app. This file itself isn't responsible for starting it (`website/run.py`), but mainly for establishing which blueprints are in use.
 
 Loading environment variables:
@@ -87,7 +87,30 @@ These need to be sent over teams, obviously cannot host them on a repo due to se
 Config object:
     - The config object is loaded from `website/config.py` and then applied. Refer to the configuration section for information on how the object works.
 
-##### 
+#### dao/
+DAO, or data access object, is where sql queries that are ran a lot will go. There are a few key properties of this folder that should be maintained to make testing and maintenance easier.
+- Does not access Flask or Session
+- Does not access the database directly
+- Does not do any auth logic.
+
+By keeping this folder constrained to only queries that are frequently used, if there is a problem with any query result from this file, but not other queries, then we know the problem is with this folder and the query itself, not DB connection/ auth or session management.
+
+#### forms/
+Holds the Flask-WTF forms
+
+#### routes/
+Holds the routes
+
+#### services/
+This is how the database is accessed. This has two important files, `db_service.py` and `session_db.py`.
+
+##### `db_service.py`
+All of the frequently used queries from the DAO are called from here, so if you are using a DAO query in a routes file, you would import `db_service.py`, not `mssql_dao.py`. The reason this is split up is because if the DB cannot be accessed, it will error out in this file instead of the DAO file, easier to debug.
+
+##### `session_db.py`
+This is one you will use a lot because it is how you access the database. In here is the function `get_db()` which automatically pulls the user login info from the session data, builds the db object, then stores it in the global `g` object so the database can be reaccessed on the same request without having to open a new connection. 
+
+Keeping authentication in here means that besides the initial login route, you should never have to manually get the username and password from the session data, or manually create the DB object.
 
 ### Starting Dev Environment
 
