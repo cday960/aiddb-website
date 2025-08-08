@@ -17,12 +17,39 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-md navbar-light bg-light">
-		<a class="navbar-brand" href="{{ url_for('auth.index') }}">Home</a>
+	<!-- <nav class="navbar navbar-expand-md navbar-light bg-light"> -->
+	<!-- 	<a class="navbar-brand" href="{{ url_for('auth.index') }}">Home</a> -->
+	<!-- 	<p>{{ session.get('db_username') }}</p> -->
+	<!-- </nav> -->
+
+	<div class="d-flex">
 		{% if session.get('db_username') %}
-		<p>{{ session.get('db_username') }}</p>
+		<span class="navbar-text me-2">
+			{% set username = session.get('db_username') %}
+			{{ username }}
+		</span>
 		{% endif %}
-	</nav>
+		{% set redirect_logout = url_for('auth.logout') %}
+		<form action="{{ redirect_logout }}" method="POST" class="d-inline">
+			{{ logout_form.hidden_tag() }}
+			{% set logout_button = logout_form.submit(class="btn btn-sm") %}
+			{{ logout_button }}
+		</form>
+	</div>
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+	<div class="container mt-3">
+		{% for category, msg in messages %}
+		{% set alert_logic = 'warning' if category == 'message' else category %}
+		<div class="alert alert-{{ alert_logic }} alert-dismissible fade show" role="alert">
+			{{ msg }}
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+		{% endfor %}
+	</div>
+	{% endif %}
+	{% endwith %}
 
 	<div class="main_block">
 		{% block content %} {% endblock %}

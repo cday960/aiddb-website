@@ -24,7 +24,7 @@ def test_login_post_invalid(client):
 
 
 def test_logout(client):
-    response = client.get("/logout", follow_redirects=True)
+    response = client.post("/logout", follow_redirects=True)
     assert response.status_code == 200
     assert b"Login" in response.data
 
@@ -45,6 +45,21 @@ def test_security_headers_present(client):
     response = client.get("/login")
     assert response.headers.get("X-Content-Type-Options") == "nosniff"
     assert "default-src 'self'" in response.headers.get("Content-Security-Policy", "")
+
+
+def test_requires_login_redirects_when_missing_session(client):
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (301, 302)
+    assert "/login" in response.headers["Location"]
+
+
+def test_logout_post_clears_session_and_redirects(client):
+    with client.session_transaction() as sess:
+        sess["db_username"] = "u"
+        sess["db_password"] = "token"
+    response = client.post("/logout", follow_redirects=False)
+    assert response.status_code in (301, 302)
+    assert "/login" in response.headers["Location"]
 
 
 # @patch("app.routes.auth_routes.SQLUtilities")

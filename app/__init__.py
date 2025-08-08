@@ -2,16 +2,15 @@ from dotenv import load_dotenv
 from pathlib import Path
 from flask import Flask, g
 from flask_session import Session
-from app.lib.security import apply_security_headers
 from config import Config
 from flask_wtf import CSRFProtect
+from app.forms.logout_form import LogoutForm
 
 session = Session()
 csrf = CSRFProtect()
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
-# app = Flask(__name__)
 
 
 def create_app():
@@ -27,6 +26,10 @@ def create_app():
     from app.routes.auth_routes import auth_bp
 
     app.register_blueprint(auth_bp)
+
+    @app.context_processor
+    def inject_forms():
+        return dict(logout_form=LogoutForm())
 
     # Security headers (after request)
     from app.lib.security import apply_security_headers

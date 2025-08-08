@@ -1,10 +1,11 @@
 import time
-from flask import Blueprint, render_template, redirect, session, url_for
+from flask import Blueprint, render_template, redirect, session, url_for, flash, request
 from app.forms.login_form import LoginForm
 from app.services.db_service import list_people
 from app.services.session_db import get_db
 from util.custom_sql_class import SQLConnection, SQLUtilities
 from util.crypto_utils import encrypt_string, decrypt_string
+from app.lib.decorators import requires_login
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -40,16 +41,19 @@ def login():
     return render_template("login.html", form=form, error=error)
 
 
-@auth_bp.route("/logout")
+@auth_bp.route("/logout", methods=["POST"])
 def logout():
+    session.pop("db_username", None)
+    session.pop("db_password", None)
     session.clear()
     return redirect(url_for("auth.login"))
 
 
 @auth_bp.route("/")
+@requires_login
 def index():
-    if "db_username" not in session or "db_password" not in session:
-        return redirect(url_for("auth.login"))
+    # if "db_username" not in session or "db_password" not in session:
+    #     return redirect(url_for("auth.login"))
 
     db = get_db()
 
@@ -75,12 +79,12 @@ def index():
                 and psn.studentNumber is not null;
         """
 
-        result, headers = db.query_with_columns(query, strip=True)
+        rows, headers = db.query_with_columns(query, strip=True)
 
-        for n in result:
+        for n in rows:
             print(n)
 
-    return render_template("manual_query.html", results=result, headers=headers)
+    return render_template("manual_query.html", results=rows, headers=headers)
 
 
 @auth_bp.route("/service")
