@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, patch
 from util.crypto_utils import encrypt_string, decrypt_string
+from util.custom_sql_class import SQLConnection
 
 """
 TODO:
