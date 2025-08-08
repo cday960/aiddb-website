@@ -1,6 +1,6 @@
 from flask import session, g
 from util.custom_sql_class import SQLUtilities
-from util.crypto_utils import encrypt_string, decrypt_string
+from util.crypto_utils import decrypt_string
 from cryptography.fernet import InvalidToken
 
 

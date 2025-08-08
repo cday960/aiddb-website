@@ -1,10 +1,9 @@
-import time
-from flask import Blueprint, render_template, redirect, session, url_for, flash, request
+from flask import Blueprint, render_template, redirect, session, url_for
 from app.forms.login_form import LoginForm
 from app.services.db_service import list_people
 from app.services.session_db import get_db
-from util.custom_sql_class import SQLConnection, SQLUtilities
-from util.crypto_utils import encrypt_string, decrypt_string
+from util.custom_sql_class import SQLUtilities
+from util.crypto_utils import encrypt_string
 from app.lib.decorators import requires_login
 
 auth_bp = Blueprint("auth", __name__)
