@@ -3,11 +3,11 @@ from util.custom_sql_class import SQLConnection
 
 
 class FakeDB:
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc, tb):
-        return False
+    # def __enter__(self):
+    #     return self
+    #
+    # def __exit__(self, exc_type, exc, tb):
+    #     return False
 
     def query_with_columns(self, query, params=None, strip=False):
         return ([(1, "X")], ["id", "name"])

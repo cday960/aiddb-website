@@ -57,32 +57,31 @@ def index():
 
     db = get_db()
 
-    with db:
-        query = """--sql
-            select top 10
-                psn.personID,
-                psn.studentNumber,
-                idnt.lastName,
-                idnt.firstName
-            from
-                Enrollment as enrl
-                join Calendar as cal
-                on cal.calendarID = enrl.calendarID
-                    and cal.endYear = 2026
-                    and cal.summerSchool = 0
-                join Person as psn
-                on enrl.personID = psn.personID
-                    and psn.stateID is null
-                join [Identity] as idnt
-                on psn.currentIdentityID = idnt.identityID
-            where enrl.serviceType = 'P'
-                and psn.studentNumber is not null;
-        """
+    query = """--sql
+        select top 10
+            psn.personID,
+            psn.studentNumber,
+            idnt.lastName,
+            idnt.firstName
+        from
+            Enrollment as enrl
+            join Calendar as cal
+            on cal.calendarID = enrl.calendarID
+                and cal.endYear = 2026
+                and cal.summerSchool = 0
+            join Person as psn
+            on enrl.personID = psn.personID
+                and psn.stateID is null
+            join [Identity] as idnt
+            on psn.currentIdentityID = idnt.identityID
+        where enrl.serviceType = 'P'
+            and psn.studentNumber is not null;
+    """
 
-        rows, headers = db.query_with_columns(query, strip=True)
+    rows, headers = db.query_with_columns(query, strip=True)
 
-        for n in rows:
-            print(n)
+    for n in rows:
+        print(n)
 
     return render_template("manual_query.html", results=rows, headers=headers)
 
