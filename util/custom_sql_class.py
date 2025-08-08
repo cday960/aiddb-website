@@ -102,6 +102,51 @@ class SQLConnection:
             logger.exception(f"Error while executing query: {e}")
             raise pyodbc.DatabaseError("Query execution failed") from e
 
+    def query_with_columns(
+        self, query: str, params: tuple | None = None, strip: bool = False
+    ):
+        """
+        Executes the query and returns a tuple of type
+        (rows: List[pyodbc.Row], columns: List[str])
+
+        :param query: SQL query to be executed
+        :param params: Extra parameters to be passed to cursor.execute()
+        :param strip: Boolean to flag if query string starts with --sql. I use
+        this in my IDE to give SQL queries proper syntax highlighting within
+        python files, so it needs to be stripped before the query is ran.
+        """
+        if not self.connection:
+            raise ConnectionError("Not connected to database.")
+
+        # q = query[5:] if strip and query.lstrip().startswith("--sql") else query
+        if strip and query.lstrip().startswith("--sql"):
+            query = query[5:]
+
+        cursor = self.connection.cursor()
+        try:
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+
+            rows: List[pyodbc.Row] = cursor.fetchall()
+            # cursor.description is a tuple of metadata
+            # of the columns returned from the SQL query
+            columns = [d[0] for d in cursor.description]
+            return rows, columns
+        finally:
+            cursor.close()
+
+    def query_dicts(
+        self, query: str, params: tuple | None = None, strip: bool = False
+    ) -> list[dict]:
+        """
+        Executes the query_with_columns() function but instead returns the
+        query result as a dictionary.
+        """
+        rows, cols = self.query_with_columns(query, params, strip)
+        return [dict(zip(cols, r)) for r in rows]
+
 
 class SQLUtilities(SQLConnection):
     # Returns a list of column names for specified table

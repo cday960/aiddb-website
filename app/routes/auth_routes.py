@@ -80,7 +80,8 @@ def index():
 
         start_time = time.time()
 
-        result = db.query(query, strip=True)
+        # result = db.query(query, strip=True)
+        result, headers = db.query_with_columns(query, strip=True)
 
         for n in result:
             print(n)
@@ -88,7 +89,7 @@ def index():
         end_time = time.time()
         query_running_time = end_time - start_time
 
-        headers = ["Person ID", "Student Number", "Last Name", "First Name"]
+        # headers = ["Person ID", "Student Number", "Last Name", "First Name"]
 
     return render_template(
         "new.html", results=result, headers=headers, time=query_running_time
