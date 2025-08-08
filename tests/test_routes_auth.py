@@ -35,6 +35,18 @@ def test_index_logged_out(client):
     assert "/login" in response.headers["Location"]
 
 
+def test_require_login_redirects(client):
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (301, 302)
+    assert "/login" in response.headers["Location"]
+
+
+def test_security_headers_present(client):
+    response = client.get("/login")
+    assert response.headers.get("X-Content-Type-Options") == "nosniff"
+    assert "default-src 'self'" in response.headers.get("Content-Security-Policy", "")
+
+
 # @patch("app.routes.auth_routes.SQLUtilities")
 # def test_index_logged_in(mock_sql_util, client, fake_encrypted_password):
 #     # set session data like a user is logged in
