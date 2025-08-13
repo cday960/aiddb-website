@@ -4,8 +4,11 @@
 <div id="test-container">
 	<h3>static page</h3>
 	<p>The current time is: <span id="time"></span></p>
-	<button onclick="toggleDarkMode('test-container')">Toggle Dark Mode (div)</button>
-	<button onclick="toggleDarkMode('body')">Toggle Dark Mode (body)</button>
+
+	<!-- Any attribute that starts with "data-..." is a custom attribute -->
+	<!-- that will be accessed with javascript code. -->
+	<button type="button" data-dark-toggle="test-container">Toggle Dark Mode (div)</button>
+	<button type="button" data-dark-toggle="body">Toggle Dark Mode (body)</button>
 
 	{% if results %}
 	<table style="margin-top: 10px;">
