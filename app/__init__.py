@@ -5,7 +5,7 @@ from pathlib import Path
 from flask import Flask, g
 from flask_session import Session
 from flask_session.base import secrets
-from config import RedisConfig, MemcachedConfig, DevConfig
+from config import RedisConfig, DevConfig
 from flask_wtf import CSRFProtect
 from app.forms.logout_form import LogoutForm
 
