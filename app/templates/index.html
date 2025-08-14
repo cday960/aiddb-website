@@ -3,11 +3,89 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div id="test-container">
-	<h3>index page</h3>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col">
+			<!-- <div class="col-12 col-lg-6"> -->
+			<div class="card shadow-sm preview-card">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-baseline mb-3">
+						<div class="option-title">State Reporting</div>
+						<span class="badge bg-primary">Simple</span>
+					</div>
 
-	<!-- Any attribute that starts with "data-..." is a custom attribute -->
-	<!-- that will be accessed with javascript code. -->
+					<p class="text-muted small mb-3">Tools for helping complete state reporting cycles.</p>
 
+					<div clas="col-12 col-md-10 col-lg-9 mx-auto">
+						<div class="list-group list-group-flush border rounded overflow-hidden">
+
+							<a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+								href="{{ url_for('auth.auditor') }}">
+								Auditor Questions <span class="text-secondary small">Yearly auditor requests</span>
+							</a>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="col">
+			<!-- <div class="col-12 col-lg-6"> -->
+			<div class="card shadow-sm preview-card">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-baseline mb-3">
+						<div class="option-title">MOSIS Extract Tools</div>
+						<span class="badge bg-primary">Simple</span>
+					</div>
+
+					<p class="text-muted small mb-3">Tools for generating, editing, or validating MOSIS extract files.</p>
+
+					<div clas="col-12 col-md-10 col-lg-9 mx-auto">
+						<div class="list-group list-group-flush border rounded overflow-hidden">
+
+							<a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+								href="#">
+								Placeholder<span class="text-secondary small">Placeholder</span>
+							</a>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Row Div -->
+	</div>
+
+	<div class="row pt-3">
+		<div class="col">
+			<div class="card shadow-sm preview-card">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-baseline mb-3">
+						<div class="option-title">SQL Utilities</div>
+						<span class="badge bg-primary">Simple</span>
+					</div>
+
+					<p class="text-muted small mb-3">Hub for general SQL tools I made and have found useful.</p>
+
+					<div clas="col-12 col-md-10 col-lg-9 mx-auto">
+						<div class="list-group list-group-flush border rounded overflow-hidden">
+
+							<a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+								href="#">
+								Placeholder<span class="text-secondary small">Placeholder</span>
+							</a>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Last div -->
 </div>
 {% endblock %}
