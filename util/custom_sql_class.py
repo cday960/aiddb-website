@@ -35,15 +35,26 @@ class SQLConnection:
         conn_str = ""
         try:
             if self.username and self.password:
-                conn_str = (
-                    f"DRIVER=FreeTDS;"
-                    f"SERVER={self.server};"
-                    f"PORT=1433;"
-                    f"UID={self.username};"
-                    f"PWD={self.password};"
-                    f"DATABASE={self.database};"
-                    f"TDS_Version=8.0;"
-                )
+                try:
+                    conn_str = (
+                        f"DRIVER=FreeTDS;"
+                        f"SERVER={self.server};"
+                        f"PORT=1433;"
+                        f"UID={self.username};"
+                        f"PWD={self.password};"
+                        f"DATABASE={self.database};"
+                        f"TDS_Version=8.0;"
+                    )
+                except:
+                    conn_str = (
+                        "DRIVER={SQL Server};"
+                        f"SERVER={self.server};"
+                        f"PORT=1433;"
+                        f"UID={self.username};"
+                        f"PWD={self.password};"
+                        f"DATABASE={self.database};"
+                        f"TDS_Version=8.0;"
+                    )
             else:
                 raise ConnectionError(
                     "Failed to connect to database: No credentials provided."

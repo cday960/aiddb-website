@@ -1,6 +1,5 @@
 import os
 import datetime
-import pylibmc
 import redis
 from dotenv import load_dotenv
 
@@ -27,13 +26,6 @@ class RedisConfig(Config):
     SESSION_KEY_PREFIX = "sess:"  # avoid key collisions
     SESSION_USE_SIGNER = True  # adds hmac sig to cookie session id
     SESSION_REFRESH_EACH_REQUEST = True  # refersh ttl when active
-
-
-class MemcachedConfig(Config):
-    SESSION_FILE_DIR = os.path.join(os.path.dirname(__file__), "flask_session")
-    SESSION_TYPE = "memcached"
-    SESSION_MEMCACHED = pylibmc.Client(["127.0.0.1"], binary=True)
-    SESSION_PERMANENT = False
 
 
 class DevConfig(Config):
