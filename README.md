@@ -197,7 +197,21 @@ Then rendering `manual_query.html` is the same as rendering `login.html`. We mak
 
 YAY!! That's it, the full logic flow of the website. It seems like a lot, but once you develop a couple of pages and add some new functionality, it is very easy to remember and makes intuitive sense.
 
-## Testing Commands
+## Commands
+
+### Run server
+`python app.py`
+
+### Start Redis server
+```
+sudo systemctl enable --now redis-server
+```
+
+```
+redis-cli ping
+```
+should give a response `PONG`
+
 
 ### Normal Test
 In /website, `pytest`
