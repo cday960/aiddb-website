@@ -4,7 +4,7 @@
 <head>
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -17,27 +17,45 @@
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/db_icon.ico') }}">
 </head>
 
-<body>
-	<!-- <nav class="navbar navbar-expand-md navbar-light bg-light"> -->
-	<!-- 	<a class="navbar-brand" href="{{ url_for('auth.index') }}">Home</a> -->
-	<!-- 	<p>{{ session.get('db_username') }}</p> -->
-	<!-- </nav> -->
+<body class="pt-5">
+	{% block navbar %}
 
-	<div class="d-flex">
-		{% if session.get('db_username') %}
-		<span class="navbar-text me-2">
-			{% set username = session.get('db_username') %}
-			{{ username }}
-		</span>
-		{% endif %}
-		{% set redirect_logout = url_for('auth.logout') %}
-		<form action="{{ redirect_logout }}" method="POST" class="d-inline">
-			{{ logout_form.hidden_tag() }}
-			{% set logout_button = logout_form.submit(class="btn btn-sm") %}
-			{{ logout_button }}
-		</form>
-	</div>
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">AID</a>
+			<ul class="navbar-nav me-auto">
+				<li class="nav-item">
+					{% set index_redirect = url_for('auth.index') %}
+					<a class="nav-link active" aria-current="page" href="{{ index_redirect }}">Home</a>
+				</li>
+				<li class="nav-item">
+					{% set test_redirect = url_for('auth.test') %}
+					<a class="nav-link" href="{{ test_redirect }}">Test</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						Dropdown link
+					</a>
+					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" href="#">Action</a></li>
+						<li><a class="dropdown-item" href="#">Another action</a></li>
+						<li><a class="dropdown-item" href="#">Something else here</a></li>
+					</ul>
+				</li>
+			</ul>
+			{% set logout_redirect = url_for('auth.logout') %}
+			<form class="d-flex ms-lg-0" action="{{ logout_redirect }}" method="POST">
+				{{ logout_form.hidden_tag() }}
+				{% set logout_button = logout_form.submit(class="btn btn-outline-light btn-sm")%}
+				{{ logout_button }}
+			</form>
+		</div>
+	</nav>
+	{% endblock %}
 
+
+
+	<!-- Flash message box on screen -->
 	{% with messages = get_flashed_messages(with_categories=true) %}
 	{% if messages %}
 	<div class="container mt-3">
@@ -57,10 +75,10 @@
 	</div>
 
 	<!-- Javascript Imports -->
-	<script src="{{ url_for('static', filename='js/script.js' )}}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
 		crossorigin="anonymous"></script>
+	<script src="{{ url_for('static', filename='js/script.js' )}}"></script>
 </body>
 
 </html>

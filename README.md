@@ -193,7 +193,7 @@ Alright we're on the last page. In the `index()` function in `auth_routes.py` we
 
 Now you don't have to use the special db methods I've built out. The `db` object will always have the method `db.query(query, strip)` which just executes a raw query and sends back the result as a list of rows and the headers will be row 0.
 
-Then rendering `manual_query.html` is the same as rendering `login.html`. We make a header row of `<th>` elements by looping through `headers`. Then we loop through `results` and make a new row for each element, then a new cell for each piece of data in said new row.
+Then rendering `test.html` is the same as rendering `login.html`. We make a header row of `<th>` elements by looping through `headers`. Then we loop through `results` and make a new row for each element, then a new cell for each piece of data in said new row.
 
 YAY!! That's it, the full logic flow of the website. It seems like a lot, but once you develop a couple of pages and add some new functionality, it is very easy to remember and makes intuitive sense.
 
