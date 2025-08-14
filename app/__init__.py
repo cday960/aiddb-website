@@ -1,9 +1,11 @@
+import logging
+import os
 from dotenv import load_dotenv
 from pathlib import Path
 from flask import Flask, g
 from flask_session import Session
 from flask_session.base import secrets
-from config import Config
+from config import RedisConfig, MemcachedConfig, DevConfig
 from flask_wtf import CSRFProtect
 from app.forms.logout_form import LogoutForm
 
@@ -14,10 +16,19 @@ env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
 def create_app():
     load_dotenv()
     app = Flask(__name__)
-    app.config.from_object(Config)
+
+    env = os.getenv("FLASK_ENV", "dev")
+
+    logger.info(f"Building app using {env} config")
+
+    app.config.from_object(DevConfig if env == "dev" else RedisConfig)
 
     # Bind session and csrf tokens to the app
     session.init_app(app)

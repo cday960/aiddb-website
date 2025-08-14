@@ -5,6 +5,7 @@ node_modules/
 eslint.config.js
 Session.vim
 flask_session/
+.flask_session/
 **/__pycache__/
 web.log
 .coverage
