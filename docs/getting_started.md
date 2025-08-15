@@ -22,7 +22,7 @@ This creates your virtual environment in the folder `.venv`
 source .venv/bin/activate
 ```
 
-Windows-
+#### Windows-
 ```
 .\.venv\Scripts\activate.bat
 ```

@@ -1,5 +1,7 @@
 # AID DB Internal Website
 
+https://cday960.github.io/aiddb-website/
+
 ## Logic Structure
 This app follows the blueprint factory design paradigm. Each "group" of routes, or pages, is broken up into different files. Those different files are the "blueprints" for those routes. Then the "factory", or `app/__init__.py` builds the app from the blueprints.
 
