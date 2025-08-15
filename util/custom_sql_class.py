@@ -4,6 +4,7 @@ from typing import List
 import pyodbc
 import os
 import logging
+import sys
 from dotenv import load_dotenv
 
 
@@ -64,6 +65,7 @@ class SQLConnection:
             return True
         except Exception as e:
             print("Connection string", conn_str)
+            print(f"\n{sys.platform}\n")
             logger.exception("Database connection failed.")
             raise ConnectionError("Failed to connect to database.")
 
