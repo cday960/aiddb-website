@@ -23,7 +23,19 @@ Validators verify that the input fits a set of criteria based off what validator
 
 
 ## Rendering in HTML
-Then those forms are imported into the routes file to be used, and passed to the `render_template` function so it can be displayed on the page. Again looking at `login.html` we use jinja templating (wrap python code in a `{{ ... }}` or `{% ... %}` block) and place `form.username.label` and `form.username` in the html file. The class parameter is just for styling using bootstrapcss.
+The form object is passed to the `render_template` function so it can be placed in the html file.
+
+Use Jinja templating to place the passed form as html elements.
+
+{% raw %}
+```jinja
+{{ form.username.label }}
+{{ form.username }}
+{{ form.password.label }}
+{{ form.password }}
+{{ form.submit }}
+```
+{% endraw %}
 
 Every single form should (I hope...) follow this structure with little deviation.
 
