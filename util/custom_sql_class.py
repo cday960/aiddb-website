@@ -65,8 +65,6 @@ class SQLConnection:
             logger.info(f"Connected to {self.database} on {self.server}.")
             return True
         except Exception as e:
-            print(f"\nConn str: {conn_str}")
-            # print(f"\n{sys.platform}\n")
             logger.exception("Database connection failed.")
             raise ConnectionError("Failed to connect to database.")
 
@@ -167,7 +165,7 @@ class SQLUtilities(SQLConnection):
     # Returns a list of column names for specified table
     def get_column_names(self, table_name):
         if not self.connection:
-            print("Not connected")
+            logger.info("Not connected to database.")
             return None
         try:
             query = """
@@ -182,5 +180,5 @@ class SQLUtilities(SQLConnection):
             result = [columns[0][0]] + columns[0][1].split(",")
             return result
         except Exception as e:
-            print(f"Error getting column names: {e}")
+            logger.info(f"Error getting column names: {e}")
             return None
