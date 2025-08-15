@@ -1,8 +1,8 @@
 ---
 layout: page
-title: "Intro"
+title: Intro
 parent: Guide
 nav_order: 1
 ---
 
-# Intro
+Basic information on the key parts of the site.

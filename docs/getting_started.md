@@ -4,4 +4,4 @@ title: "Getting Started"
 nav_order: 2
 ---
 
-# Getting Started
+Initial install, venv initialization, and starting the server.

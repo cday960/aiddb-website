@@ -5,4 +5,4 @@ parent: Guide
 nav_order: 2
 ---
 
-# Security
+Information on all the security implementations from nonce to fernet.
