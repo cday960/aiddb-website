@@ -1,3 +1,12 @@
+---
+layout: page
+title: "Home"
+nav_order: 1
+---
+
 # TEST
 
-- [Example](example.md)
+- [Getting Started](example.md)
+- [Intro](guide/intro.md)
+- [Security](guide/security.md)
+- [Example Logic Flow](example.md)
