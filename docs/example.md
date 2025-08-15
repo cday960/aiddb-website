@@ -56,7 +56,15 @@ Ok we're on the last steps to rendering a page (yay!). In `app/templates/login.h
 To put the form into an HTML file it is as easy as 
 
 
-`{{ username_form.label }}`
+{% raw %}
+```jinja
+{{ form.username.label }}
+{{ form.username }}
+{{ form.password.label }}
+{{ form.password }}
+{{ submit_button }}
+```
+{% endraw %}
 
 and that's it. Everything else that is in there is for styling and organization. I split up these lines by setting the actual HTML element to a variable first, that way there is a clear separation between the code establishing how I want the form to look versus where I want it to live on the page.
 
