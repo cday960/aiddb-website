@@ -34,9 +34,10 @@ class SQLConnection:
         initializes all attributes of the SQL object
         """
         conn_str = ""
+        platform = sys.platform
         try:
             if self.username and self.password:
-                try:
+                if platform == "linux":
                     conn_str = (
                         f"DRIVER=FreeTDS;"
                         f"SERVER={self.server};"
@@ -46,7 +47,7 @@ class SQLConnection:
                         f"DATABASE={self.database};"
                         f"TDS_Version=8.0;"
                     )
-                except:
+                else:
                     conn_str = (
                         "DRIVER={SQL Server};"
                         f"SERVER={self.server};"
@@ -64,8 +65,8 @@ class SQLConnection:
             logger.info(f"Connected to {self.database} on {self.server}.")
             return True
         except Exception as e:
-            print("Connection string", conn_str)
-            print(f"\n{sys.platform}\n")
+            print(f"\nConn str: {conn_str}")
+            # print(f"\n{sys.platform}\n")
             logger.exception("Database connection failed.")
             raise ConnectionError("Failed to connect to database.")
 
