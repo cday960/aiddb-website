@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Forms
-nav_order: 1
+nav_order: 2
 ---
 
 # Forms
@@ -9,16 +9,34 @@ nav_order: 1
 Structured forms are how user input is sanitized and trusted. This webapp utilizes Flask_WTF which lets us integrate WTForms in Flask. WTForms is a simple data validation library to make sure users aren't putting js scripts into their username box, among other nefarious things.
 
 ## Field Objects
-Forms are established in `website/app/forms`, and each form will get a new file. In `login_form.py` there is a class, `LoginForm`, which extends the `FlaskForm` class. Then the attributes of the class are just whatever fields you want that form to have. 
+Forms are established in `website/app/forms`, and each form will get a new file. 
+
+In `login_form.py` there is a class, `LoginForm`, which extends the `FlaskForm` class. Then the attributes of the class are just whatever fields you want that form to have. 
+
 Since this is a login form we need a username, password, and submit button. 
 - Username is a normal text field, so we use the `StringField`.
 - Password, we want the characters hidden on screen so we use the `PasswordField` object, etc. 
-- Submit button, `SubmitField` object packages the form data into headers before resubmitting the request to the url of the page it is on. The `if` block only runs if the data is validated (the button press is what sent the request).
+- Submit button, `SubmitField` object validates/packages the form data into headers before resubmitting the request to the url of the page it is on. 
+
+
 All field objects are listed in great length on the [FlaskWTF docs](https://flask-wtf.readthedocs.io/en/1.2.x/#:~:text=Flask%2DWTF%20%E2%80%94%20Flask%2DWTF,Version%200.10.3).
 
 
 ## Validators
-Validators verify that the input fits a set of criteria based off what validator object is used. The `DataRequired` object ensures the field is not empty on submit. More specifically, it checks that `form.<field>.data` exists. This is important since in the `if` block in `app/routes/auth_routes.py` we assign username and password to the form data, which wouldn't be possible if the login fields were left empty. Validators should always be used.
+Validators verify that the input fits a set of criteria based off what validator object is used. The `DataRequired` object ensures the field is not empty on submit. More specifically, it checks that `form.<field>.data` exists. 
+
+This is important since in `app/routes/auth_routes.py` it does
+
+```python
+if form.validate_on_submit():
+    username = form.username.data
+    password = form.password.data
+```
+
+which wouldn't be possible if the login fields were left empty. 
+
+__Validators should always be used!__
+
 - [Validator Docs](https://wtforms.readthedocs.io/en/2.3.x/validators/)
 
 
