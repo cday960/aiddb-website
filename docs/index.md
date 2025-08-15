@@ -1,6 +1,3 @@
-layout: page
-title: "Home"
-permalink: /
-
-
 # TEST
+
+- [Example](example.md)
