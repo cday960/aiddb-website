@@ -8,3 +8,16 @@ remote_theme: just-the-docs/just-the-docs
 color_scheme: dark
 
 search_enabled: true
+
+
+# Always show the guide collection of pages on the navbar
+collections:
+  guide:
+    output: true
+
+just_the_docs:
+  collections:
+    guide:
+      name: Guide
+      nav_fold: true
+      nav_sort: manual
