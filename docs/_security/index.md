@@ -18,7 +18,7 @@ Then that base class is extended to make `RedisConfig` and `DevConfig`.
 
 `DevConfig` sets the app to store session data in a folder in the root project directory. This is not secure, even if all data stored is encrypted, so it is only used when running the app locally for development.
 
-Read more about the [Config Setup]({% link _security/config.md %})
+Read more about the [Config Setup]({{ site.baseurl }}{% link _security/config.md %})
 
 ## Encryption
 
@@ -49,8 +49,8 @@ All authentication is done through the SQL server aiddb.
 
 The login page takes db login info, then attempts to establish a connection. If it succeeds, the login info is encrypted and stored in the session data. If it fails, nothing is stored and the user must attempt to login again. See [custom_sql_class.py](#) for more info.
 
-This logic is implemented with decorators. Read [decorators]({% link _guide/decorators.md %}) for more information.
+This logic is implemented with decorators. Read [decorators]({{ site.baseurl }}{% link _guide/decorators.md %}) for more information.
 
 ## Forms
 
-All user data input is handled through `Flask-WTF` forms, a library that implements [WTForms](https://wtforms.readthedocs.io/en/3.2.x/) into Flask and Python. It lets us create classes that automatically sanitize and constrain inputted data before it is used in the backend. See [forms]({% link _guide/forms.md %}) for more information.
+All user data input is handled through `Flask-WTF` forms, a library that implements [WTForms](https://wtforms.readthedocs.io/en/3.2.x/) into Flask and Python. It lets us create classes that automatically sanitize and constrain inputted data before it is used in the backend. See [forms]({{ site.baseurl }}{% link _guide/forms.md %}) for more information.
