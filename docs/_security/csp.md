@@ -1,7 +1,6 @@
 ---
 layout: page
 title: Content Security Policy
-nav_order: 4
 ---
 
 # Content Security Policy
