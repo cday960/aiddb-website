@@ -1,6 +1,5 @@
 ---
-layout: page
-title: "Security"
+title: Security
 nav_order: 2
 ---
 

@@ -1,5 +1,4 @@
 ---
-layout: page
 title: "Example Logic Flow"
 nav_order: 3
 ---

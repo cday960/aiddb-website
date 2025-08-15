@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Intro
 nav_order: 1
 ---
