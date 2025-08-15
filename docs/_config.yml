@@ -16,6 +16,8 @@ search_enabled: true
 collections:
   guide:
     output: true
+  security:
+    output: true
 
 just_the_docs:
   collections:
@@ -23,3 +25,6 @@ just_the_docs:
       name: Guide
       nav_fold: true
       nav_sort: manual
+    security:
+      name: Security
+      nav_fold: true
