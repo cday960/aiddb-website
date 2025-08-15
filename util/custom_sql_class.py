@@ -63,6 +63,7 @@ class SQLConnection:
             logger.info(f"Connected to {self.database} on {self.server}.")
             return True
         except Exception as e:
+            print("Connection string", conn_str)
             logger.exception("Database connection failed.")
             raise ConnectionError("Failed to connect to database.")
 
