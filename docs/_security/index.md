@@ -1,10 +1,10 @@
 ---
 layout: page
-title: Security
+title: Overview
 nav_order: 1
 ---
 
-# Security
+# Security Overview
 
 Information on all the security implementations from nonce to fernet.
 
