@@ -51,10 +51,12 @@ return render_template("login.html", form=form, error=error)
 
 where the login page is rendered. We pass the form and error into the render command.
 
-Ok we're on the last steps to rendering a page (yay!). In `app/templates/login.html` we see that it contains a header and a form. The form method is `POST` since the only way to access the `/login` route is with a `POST` method. This will be the case for all form requests. Then we have `username_label, username_form, password_label, password_form, submit_button`. To put the form into an HTML file it is as easy as 
+Ok we're on the last steps to rendering a page (yay!). In `app/templates/login.html` we see that it contains a header and a form. The form method is `POST` since the only way to access the `/login` route is with a `POST` method. This will be the case for all form requests. Then we have `username_label, username_form, password_label, password_form, submit_button`.  
+
+To put the form into an HTML file it is as easy as 
 
 
-` form stuff here from previous commit `
+`{{ username_form.label }}`
 
 and that's it. Everything else that is in there is for styling and organization. I split up these lines by setting the actual HTML element to a variable first, that way there is a clear separation between the code establishing how I want the form to look versus where I want it to live on the page.
 
