@@ -1,17 +1,19 @@
 # AID DB Internal Website
 
 ## Getting Started
-1. Ask me to send you the `.env` file, this is necessary for encryption and app secret keys. Place env file in project directory, same folder as `run.py`.
+### 1. `.env` file
+Ask me to send you the `.env` file, this is necessary for encryption and app secret keys. Place env file in project directory, same folder as `run.py`.
 
-2. In project directory, create virtual environment
+### 2. Virtual Environment
+In project directory, create virtual environment
 ```
 python -m venv .venv
 ```
 This creates your virtual environment in the folder `.venv`
 
-3. Activate environment
+### 3. Activate environment
 
-Linux-
+#### Linux-
 ```
 source .venv/bin/activate
 ```
@@ -20,20 +22,45 @@ Windows-
 ```
 .\.venv\Scripts\activate.bat
 ```
-4. Install MS C++ Build Tools: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+### 4. Install MS C++ Build Tools
+
+https://visualstudio.microsoft.com/visual-cpp-build-tools/
 
 Make sure to install "Desktop development with C++" and "Node.js build tools".
 
-5. Install Python packages
+### 5. Install Python packages
 ```
 pip install -r requirements.txt
 ```
 
-6. Run the server
+### 6. Run the server
 ```
 python run.py
 ```
 You can now connect to the dev site at http://127.0.0.1:5000
+
+## Commands
+
+### Run server
+`python app.py`
+
+### Start Redis server
+```
+sudo systemctl enable --now redis-server
+```
+
+```
+redis-cli ping
+```
+should give a response `PONG`
+
+
+### Normal Test
+In /website, `pytest`
+
+### Coverage Test
+`pytest --cov=app --cov=util`
+
 
 ## Logic Structure
 This app follows the blueprint factory design paradigm. Each "group" of routes, or pages, is broken up into different files. Those different files are the "blueprints" for those routes. Then the "factory", or `app/__init__.py` builds the app from the blueprints.
@@ -233,24 +260,3 @@ Then rendering `test.html` is the same as rendering `login.html`. We make a head
 
 YAY!! That's it, the full logic flow of the website. It seems like a lot, but once you develop a couple of pages and add some new functionality, it is very easy to remember and makes intuitive sense.
 
-## Commands
-
-### Run server
-`python app.py`
-
-### Start Redis server
-```
-sudo systemctl enable --now redis-server
-```
-
-```
-redis-cli ping
-```
-should give a response `PONG`
-
-
-### Normal Test
-In /website, `pytest`
-
-### Coverage Test
-`pytest --cov=app --cov=util`
