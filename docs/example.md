@@ -62,7 +62,7 @@ To put the form into an HTML file it is as easy as
 {{ form.username }}
 {{ form.password.label }}
 {{ form.password }}
-{{ submit_button }}
+{{ form.submit }}
 ```
 {% endraw %}
 
