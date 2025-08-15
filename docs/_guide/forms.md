@@ -11,12 +11,21 @@ Structured forms are how user input is sanitized and trusted. This webapp utiliz
 ## Field Objects
 Forms are established in `website/app/forms`, and each form will get a new file. 
 
-In `login_form.py` there is a class, `LoginForm`, which extends the `FlaskForm` class. Then the attributes of the class are just whatever fields you want that form to have. 
+In `login_form.py` there is a class, 
+
+```python
+class LoginForm(FlaskForm):
+    username = StringField("DB Username", validators=[DataRequired()])
+    password = PasswordField("DB Password", validators=[DataRequired()])
+    submit = SubmitField("Login")
+```
+
+which extends the `FlaskForm` class. The attributes of the class are whatever fields you want that form to have. 
 
 Since this is a login form we need a username, password, and submit button. 
-- Username is a normal text field, so we use the `StringField`.
-- Password, we want the characters hidden on screen so we use the `PasswordField` object, etc. 
-- Submit button, `SubmitField` object validates/packages the form data into headers before resubmitting the request to the url of the page it is on. 
+- Username: normal text field, so use the `StringField`.
+- Password: we want the characters hidden on screen so use `PasswordField`.
+- Submit button: `SubmitField` object validates/packages the form data into headers before resubmitting the request to the url of the page it is on. 
 
 
 All field objects are listed in great length on the [FlaskWTF docs](https://flask-wtf.readthedocs.io/en/1.2.x/#:~:text=Flask%2DWTF%20%E2%80%94%20Flask%2DWTF,Version%200.10.3).

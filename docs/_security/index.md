@@ -49,7 +49,7 @@ All authentication is done through the SQL server aiddb.
 
 The login page takes db login info, then attempts to establish a connection. If it succeeds, the login info is encrypted and stored in the session data. If it fails, nothing is stored and the user must attempt to login again. See [custom_sql_class.py](#) for more info.
 
-This logic is implemented with decorators. Read [decorators](#) for more information.
+This logic is implemented with decorators. Read [decorators](_guide/decorators.md) for more information.
 
 ## Forms
 
