@@ -16,4 +16,4 @@ Other new decorators will be explained here.
 
 ## `security.py`
 
-This file is described in detail [here]({{ site.basurl }}{% link _security/cps.md %})
+This file is described in detail [here]({{ site.basurl }}{% link _security/csp.md %})
