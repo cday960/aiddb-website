@@ -32,7 +32,7 @@ These blueprints are then utilized in `website/app/__init__.py`, specifically `a
 
 ### Routes
 
-The route files contain __view functions__, or functions that return a rendered HTML file. Above each view function is a [decorator](decorators.md) that determines what route that function will serve. 
+The route files contain __view functions__, or functions that return a rendered HTML file. Above each view function is a [decorator]({{ site.baseurl }}{% link _guide/decorators.md}) that determines what route that function will serve. 
 
 All logic required for a specific page will be in the view function. So if a page is supposed to display a table from the db, all db operations will happen within that page's view function.
 
