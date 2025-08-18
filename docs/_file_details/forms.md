@@ -10,6 +10,26 @@ Forms are built using Flask-WTF forms.
 
 Each file is a separate form.
 
+To use a form in a page, inject the form into the html page
+```python
+from app.forms.login_form import LoginForm
+
+def login():
+    form = LoginForm()
+    ...
+    return render_template("login.html", form=form)
+```
+Then use jinja templating in the html file to place the form elements
+{% raw %}
+```jinja
+{{ form.username.label }}
+{{ form.username }}
+{{ form.password.label }}
+{{ form.password }}
+{{ form.submit }}
+```
+{% endraw %}
+
 All fields for forms should be field objects that are imported from `wtforms`
 
 Common field objects:
