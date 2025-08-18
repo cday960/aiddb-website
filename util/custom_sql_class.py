@@ -1,17 +1,13 @@
-from typing import List
-
-# from pyodbc import DatabaseError
 import pyodbc
-import os
 import logging
 import sys
+from typing import List
 from dotenv import load_dotenv
 
 
 load_dotenv()
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-# logging.basicConfig(filename="web.log")
 
 
 class SQLConnection:
@@ -81,7 +77,9 @@ class SQLConnection:
         self.close()
 
     # Executes the query and returns the result which is a list of rows
-    def query(self, query, strip=None, params=None) -> List[pyodbc.Row]:
+    def query(
+        self, query: str, strip: bool = False, params: tuple | None = None
+    ) -> List[pyodbc.Row]:
         """
         Executes the query and returns a list of rows from the result.
 
@@ -136,19 +134,16 @@ class SQLConnection:
             query = query[5:]
 
         cursor = self.connection.cursor()
-        try:
-            if params:
-                cursor.execute(query, params)
-            else:
-                cursor.execute(query)
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
 
-            rows: List[pyodbc.Row] = cursor.fetchall()
-            # cursor.description is a tuple of metadata
-            # of the columns returned from the SQL query
-            columns = [d[0] for d in cursor.description]
-            return rows, columns
-        finally:
-            cursor.close()
+        rows: List[pyodbc.Row] = cursor.fetchall()
+        # cursor.description is a tuple of metadata
+        # of the columns returned from the SQL query
+        columns = [d[0] for d in cursor.description]
+        return rows, columns
 
     def query_dicts(
         self, query: str, params: tuple | None = None, strip: bool = False
@@ -159,26 +154,3 @@ class SQLConnection:
         """
         rows, cols = self.query_with_columns(query, params, strip)
         return [dict(zip(cols, r)) for r in rows]
-
-
-class SQLUtilities(SQLConnection):
-    # Returns a list of column names for specified table
-    def get_column_names(self, table_name):
-        if not self.connection:
-            logger.info("Not connected to database.")
-            return None
-        try:
-            query = """
-            SELECT
-                TABLE_NAME,
-                STRING_AGG(COLUMN_NAME, ', ') AS COLUMNS
-            FROM information_schema.columns
-            WHERE TABLE_NAME = ?
-            GROUP BY TABLE_NAME;
-            """
-            columns = self.query(query, (table_name))
-            result = [columns[0][0]] + columns[0][1].split(",")
-            return result
-        except Exception as e:
-            logger.info(f"Error getting column names: {e}")
-            return None

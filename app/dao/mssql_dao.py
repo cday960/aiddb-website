@@ -1,6 +1,6 @@
 from typing import Any, Iterable, Tuple, List, Dict
 
-from util.custom_sql_class import SQLUtilities
+from util.custom_sql_class import SQLConnection
 
 
 def rows_to_dicts(

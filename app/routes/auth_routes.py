@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, session, url_for
 from app.forms.login_form import LoginForm
 from app.services.db_service import list_people
 from app.services.session_db import get_db
-from util.custom_sql_class import SQLUtilities
+from util.custom_sql_class import SQLConnection
 from util.crypto_utils import encrypt_string
 from app.lib.decorators import requires_login
 
@@ -20,7 +20,7 @@ def login():
 
         # Try to connect using provided info
         try:
-            db = SQLUtilities(
+            db = SQLConnection(
                 server="aiddb",
                 database="Columbia",
                 username=username,

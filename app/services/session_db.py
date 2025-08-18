@@ -1,10 +1,10 @@
 from flask import session, g
-from util.custom_sql_class import SQLUtilities
+from util.custom_sql_class import SQLConnection
 from util.crypto_utils import decrypt_string
 from cryptography.fernet import InvalidToken
 
 
-def get_db() -> SQLUtilities:
+def get_db() -> SQLConnection:
     if "db" in g:
         return g.db
 
@@ -18,7 +18,7 @@ def get_db() -> SQLUtilities:
     except InvalidToken as e:
         raise RuntimeError("Invalid session token") from e
 
-    g.db = SQLUtilities(
+    g.db = SQLConnection(
         server="aiddb",
         database="Columbia",
         username=username,
