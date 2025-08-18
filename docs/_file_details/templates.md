@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Static
+title: Templates
 nav_order: 7
 ---
 
-# Static
+# Templates
 
