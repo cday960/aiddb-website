@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% from "_macros/components.html" import accordion_button %}
+{% from "_macros/components.html" import accordion_button, custom_link %}
 
 {% block title %}Auditor Questions{% endblock %}
 
@@ -11,10 +11,7 @@
 		<div class="col-md-10 offset-md-1">
 			<h2>Auditors Questions</h2>
 			<h5>All files come from the
-				<a class="link-offset-2 link-offest-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-					href="https://apps.dese.mo.gov/DESEApplicationsSignin/ApplicationMenu">
-					DESE apps
-				</a>
+				{{ custom_link('DESE apps', 'https://apps.dese.mo.gov/DESEApplicationsSignin/ApplicationMenu')}}
 			</h5>
 
 			<div class="accordion accordion-flush" id="main">
@@ -87,9 +84,11 @@
 					<div id="collapseFour" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
 							<ol class="text-start">
-								<li>Certified file: MOSIS Data Collection System -> June Cycle -> Student Core -> Certified Trial ->
+								<li><span style="font-weight: bold;">Certified file:</span> MOSIS Data Collection System -> June Cycle
+									-> Student Core -> Certified Trial ->
 									Download</li>
-								<li>Warning file: MOSIS Data Collection System -> June Cycle -> Student Core -> Certified Trial ->
+								<li><span style="font-weight: bold;">Warning file:</span> MOSIS Data Collection System -> June Cycle ->
+									Student Core -> Certified Trial ->
 									Reports -> Edits Summary By Record (right side)</li>
 							</ol>
 						</div>
@@ -130,9 +129,8 @@
 			</div>
 
 			<div class="container mt-3">
-				<a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-					href="https://sites.google.com/cpsk12.org/aid-manual/reporting/auditers-requirements?authuser=0">Manual
-					Link</a>
+				{{ custom_link('Manual Link',
+				'https://sites.google.com/cpsk12.org/aid-manual/reporting/auditers-requirements?authuser=0')}}
 			</div>
 
 		</div>
