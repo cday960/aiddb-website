@@ -13,3 +13,7 @@ This folder holds utility files that are used throughout files in the `app/` fol
 The `requires_login` decorator is explained [here]({{ site.basurl }}{% link _guide/decorators.md %}).
 
 Other new decorators will be explained here.
+
+## `security.py`
+
+This file is described in detail [here]({{ site.basurl }}{% link _security/cps.md %})
