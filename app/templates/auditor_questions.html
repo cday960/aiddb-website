@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% from "_macros/components.html" import accordion_button %}
+
 {% block title %}Auditor Questions{% endblock %}
 
 {% block content %}
@@ -17,11 +19,8 @@
 
 			<div class="accordion accordion-flush" id="main">
 				<div class="accordion-item">
-					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
-							Attendance Hours Summary
-						</button>
+					<h2 class="accordion-header" id="headingOne">
+						{{ accordion_button('Attendance Hours Summary', 'collapseZero') }}
 					</h2>
 					<div id="collapseZero" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
@@ -37,10 +36,7 @@
 
 				<div class="accordion-item">
 					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-							Published School Calendars (Both planned and final)
-						</button>
+						{{ accordion_button('Published School Calendars (Both planned and final)', 'collapseOne') }}
 					</h2>
 					<div id="collapseOne" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
@@ -55,10 +51,7 @@
 
 				<div class="accordion-item">
 					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-							Screen 10: School Calendar List for previous year
-						</button>
+						{{ accordion_button('Screen 10: School Calendar List for previous year', 'collapseTwo') }}
 					</h2>
 					<div id="collapseTwo" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
@@ -73,10 +66,7 @@
 
 				<div class="accordion-item">
 					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-							Screen 15: Home School/Free and Reduced Lunch for previous year
-						</button>
+						{{ accordion_button('Screen 15: Home School/Free and Reduced Lunch for previous year', 'collapseThree') }}
 					</h2>
 					<div id="collapseThree" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
@@ -92,10 +82,7 @@
 
 				<div class="accordion-item">
 					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-							June MOSIS Certified File
-						</button>
+						{{ accordion_button('June MOSIS Certified File', 'collapseFour') }}
 					</h2>
 					<div id="collapseFour" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
@@ -113,10 +100,7 @@
 
 				<div class="accordion-item">
 					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-							September and January Membership Reports
-						</button>
+						{{ accordion_button('September and January Membership Reports', 'collapseFive') }}
 					</h2>
 					<div id="collapseFive" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
@@ -131,10 +115,8 @@
 
 				<div class="accordion-item">
 					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-							Documentation supporting membership and hours of attendance reporting to DESE
-						</button>
+						{{ accordion_button('Documentation supporting membership and hours of attendance reporting to DESE',
+						'collapseSix') }}
 					</h2>
 					<div id="collapseSix" class="accordion-collapse collapse" style="">
 						<div class="accordion-body">
