@@ -26,7 +26,8 @@ We are using the `Fernet` module from the included `cryptography` library for en
 
 Fernet utilizes a generated secret key to encrypt and decrypt data. This secret key is stored in the `.env` file.
 
-The only file Fernet is used in is `util/crypto_utils.py`. For more information about how encryption is handled, read [crypto_utils.py]({{ site.basurl }}{% link _file_details/util.md %}).
+The only file Fernet is used in is `util/crypto_utils.py`. 
+For more information about how encryption is handled, read [crypto_utils.py]({{ site.baseurl }}{% link _file_details/util.md %}).
 
 ## Content Secure Policy (CSP)
 
@@ -47,7 +48,7 @@ A nonce (number used once) is a randomly generated string that is attached to th
 
 All authentication is done through the SQL server aiddb. 
 
-The login page takes db login info, then attempts to establish a connection. If it succeeds, the login info is encrypted and stored in the session data. If it fails, nothing is stored and the user must attempt to login again. See [custom_sql_class.py]({{ site.basurl }}{% link _file_details/util.md %}) for more info.
+The login page takes db login info, then attempts to establish a connection. If it succeeds, the login info is encrypted and stored in the session data. If it fails, nothing is stored and the user must attempt to login again. See [custom_sql_class.py]({{ site.baseurl }}{% link _file_details/util.md %}) for more info.
 
 This logic is implemented with decorators. Read [decorators]({{ site.baseurl }}{% link _guide/decorators.md %}) for more information.
 
