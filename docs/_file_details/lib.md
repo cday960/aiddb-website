@@ -10,6 +10,6 @@ This folder holds utility files that are used throughout files in the `app/` fol
 
 ## `decorators.py`
 
-The `requires_login` decorator is explained [here]({{ site.basurl }}{% link _guide/decorators.md}).
+The `requires_login` decorator is explained [here]({{ site.basurl }}{% link _guide/decorators.md %}).
 
 Other new decorators will be explained here.
