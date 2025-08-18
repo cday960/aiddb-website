@@ -18,6 +18,8 @@ collections:
     output: true
   security:
     output: true
+  file_details:
+    output: true
 
 just_the_docs:
   collections:
@@ -28,3 +30,7 @@ just_the_docs:
     security:
       name: Security
       nav_fold: true
+    file_details:
+      name: File Details
+      nav_fold: true
+      nav_sort: manual
