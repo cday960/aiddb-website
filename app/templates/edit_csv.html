@@ -18,6 +18,7 @@
 	<form method="post" action="{{ url_for('auth.edit_csv', file=file) }}">
 		{% if csrf_enabled %}
 		{{ csrf_token() }}
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 		{% endif %}
 		<div class="table-responsive" style="max-height: 700px; overflow-y: auto; overflow-x: auto;">
 			<table class="table table-success table-striped">

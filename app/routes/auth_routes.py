@@ -123,7 +123,7 @@ def edit_csv():
 
     if not file_path:
         return render_template(
-            "temp.html",
+            "edit_csv.html",
             data=None,
             headers=None,
             file=None,
@@ -141,21 +141,22 @@ def edit_csv():
     """
 
     if request.method == "POST":
-        print(request.form)
+        data = []
+        col = -1
+        for key, value in request.form.items():
+            if key.startswith("cell_"):
+                _, r, c = key.split("_")
+                c = int(c)
+                col = max(col, c)
 
-    # if request.method == "POST":
-    #     rows = int(request.form.get("row_count", 0))
-    #     cols = int(request.form.get("col_count", 0))
-    #     data = []
-    #     for i in range(rows):
-    #         row = []
-    #         for j in range(cols):
-    #             row.append(request.form.get(f"cell_{i}_{j}", ""))
-    #         data.append(row)
-    #     with open(full_path, "w", newline="") as f:
-    #         writer = csv.writer(f)
-    #         writer.writerows(data)
-    #     flash("CSV updated successfully.", "success")
+        row = int((len(request.form) + 1) / (col + 1)) - 1
+        print(f"Cols: {col}\nRows: {row}")
+
+        for i in range(10):
+            row = []
+            for j in range(20):
+                row.append(request.form[f"cell_{i}_{j}"].lstrip())
+            data.append(row)
 
     if os.path.exists(full_path):
         with open(full_path, newline="") as f:
@@ -174,10 +175,9 @@ def edit_csv():
 
     flash("File not found.", "danger")
     return render_template(
-        "temp.html",
+        "edit_csv.html",
         data=None,
         headers=None,
         file=file_path,
         csrf_enabled=csrf_enabled,
     )
-    # return {"status": "ok"}
