@@ -1,12 +1,5 @@
-from app.dao.mssql_dao import rows_to_dicts, select_with_columns, get_top_people
-
-
-class FakeDB:
-    def __init__(self, rows, cols):
-        self._rows, self._cols = rows, cols
-
-    def query_with_columns(self, query, params=None):
-        return self._rows, self._cols
+from app.dao.mssql_dao import rows_to_dicts, select_with_columns
+from tests.fake_db import FakeDB
 
 
 def test_rows_to_dicts():

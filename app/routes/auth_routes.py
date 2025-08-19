@@ -74,7 +74,7 @@ def test():
             and psn.studentNumber is not null;
     """
 
-    rows, headers = db.query_with_columns(query, strip=True)
+    rows, headers = db.query_with_columns(query)
 
     for n in rows:
         print(n)

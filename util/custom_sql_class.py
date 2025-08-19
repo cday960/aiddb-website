@@ -77,9 +77,7 @@ class SQLConnection:
         self.close()
 
     # Executes the query and returns the result which is a list of rows
-    def query(
-        self, query: str, strip: bool = False, params: tuple | None = None
-    ) -> List[pyodbc.Row]:
+    def query(self, query: str, params: tuple | None = None) -> List[pyodbc.Row]:
         """
         Executes the query and returns a list of rows from the result.
 
@@ -90,7 +88,7 @@ class SQLConnection:
             logger.exception("Database query failed")
             raise ConnectionError("Not connected to database")
 
-        if strip == True:
+        if query.lstrip().startswith("--sql"):
             logger.info("Stripping SQL Query...")
             query = query[5:]  # strip "--sql" prefix for syntax highlighting
 
@@ -113,25 +111,20 @@ class SQLConnection:
             logger.exception(f"Error while executing query: {e}")
             raise pyodbc.DatabaseError("Query execution failed") from e
 
-    def query_with_columns(
-        self, query: str, params: tuple | None = None, strip: bool = False
-    ):
+    def query_with_columns(self, query: str, params: tuple | None = None):
         """
         Executes the query and returns a tuple of type
         (rows: List[pyodbc.Row], columns: List[str])
 
         :param query: SQL query to be executed
         :param params: Extra parameters to be passed to cursor.execute()
-        :param strip: Boolean to flag if query string starts with --sql. I use
-        this in my IDE to give SQL queries proper syntax highlighting within
-        python files, so it needs to be stripped before the query is ran.
         """
         if not self.connection:
             raise ConnectionError("Not connected to database.")
 
-        # q = query[5:] if strip and query.lstrip().startswith("--sql") else query
-        if strip and query.lstrip().startswith("--sql"):
-            query = query[5:]
+        if query.lstrip().startswith("--sql"):
+            logger.info("Stripping SQL Query...")
+            query = query[5:]  # strip "--sql" prefix for syntax highlighting
 
         cursor = self.connection.cursor()
         if params:
@@ -145,12 +138,10 @@ class SQLConnection:
         columns = [d[0] for d in cursor.description]
         return rows, columns
 
-    def query_dicts(
-        self, query: str, params: tuple | None = None, strip: bool = False
-    ) -> list[dict]:
+    def query_dicts(self, query: str, params: tuple | None = None) -> list[dict]:
         """
         Executes the query_with_columns() function but instead returns the
         query result as a dictionary.
         """
-        rows, cols = self.query_with_columns(query, params, strip)
+        rows, cols = self.query_with_columns(query, params)
         return [dict(zip(cols, r)) for r in rows]
