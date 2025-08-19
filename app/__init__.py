@@ -36,8 +36,10 @@ def create_app():
 
     # Register blueprints
     from app.routes.auth_routes import auth_bp
+    from app.routes.api_routes import api_bp
 
     app.register_blueprint(auth_bp)
+    app.register_blueprint(api_bp)
 
     @app.context_processor
     def inject_forms():

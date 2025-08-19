@@ -90,16 +90,6 @@ def index():
     return render_template("index.html")
 
 
-@auth_bp.route("/service")
-@requires_login
-def using_service():
-    result, headers = list_people()
-    for n in result:
-        print(n)
-
-    return render_template("test.html", results=result, headers=headers)
-
-
 @auth_bp.route("/auditor")
 @requires_login
 def auditor():
