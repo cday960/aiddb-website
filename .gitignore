@@ -9,3 +9,5 @@ flask_session/
 **/__pycache__/
 web.log
 .coverage
+temp/
+temp.html

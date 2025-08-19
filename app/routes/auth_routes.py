@@ -1,10 +1,22 @@
-from flask import Blueprint, render_template, redirect, session, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    render_template,
+    redirect,
+    session,
+    url_for,
+    request,
+)
 from app.forms.login_form import LoginForm
 from app.services.db_service import list_people
 from app.services.session_db import get_db
 from util.custom_sql_class import SQLConnection
 from util.crypto_utils import encrypt_string
 from app.lib.decorators import requires_login
+
+import os
+import csv
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -94,3 +106,78 @@ def index():
 @requires_login
 def auditor():
     return render_template("auditor_questions.html")
+
+
+@auth_bp.route("/csv/edit", methods=["GET", "POST"])
+def edit_csv():
+    base_dir = current_app.config.get("CSV_BASE_DIR", "./temp")
+    file_path = base_dir + "/test_file.csv"
+
+    # file_path = (
+    #     request.args.get("file")
+    #     if request.method == "GET"
+    #     else request.form.get("file")
+    # )
+
+    csrf_enabled = current_app.config.get("WTF_CSRF_ENABLED", True)
+
+    if not file_path:
+        return render_template(
+            "temp.html",
+            data=None,
+            headers=None,
+            file=None,
+            csrf_enabled=csrf_enabled,
+        )
+
+    full_path = os.path.abspath(os.path.join(base_dir, file_path))
+
+    """
+    Check file path stays in base dir
+    """
+
+    """
+    POST editing goes here
+    """
+
+    if request.method == "POST":
+        print(request.form)
+
+    # if request.method == "POST":
+    #     rows = int(request.form.get("row_count", 0))
+    #     cols = int(request.form.get("col_count", 0))
+    #     data = []
+    #     for i in range(rows):
+    #         row = []
+    #         for j in range(cols):
+    #             row.append(request.form.get(f"cell_{i}_{j}", ""))
+    #         data.append(row)
+    #     with open(full_path, "w", newline="") as f:
+    #         writer = csv.writer(f)
+    #         writer.writerows(data)
+    #     flash("CSV updated successfully.", "success")
+
+    if os.path.exists(full_path):
+        with open(full_path, newline="") as f:
+            content = list(csv.reader(f))
+
+        headers = content[0]
+        content = content[1:]
+
+        return render_template(
+            "edit_csv.html",
+            data=content,
+            headers=headers,
+            file=file_path,
+            csrf_enabled=csrf_enabled,
+        )
+
+    flash("File not found.", "danger")
+    return render_template(
+        "temp.html",
+        data=None,
+        headers=None,
+        file=file_path,
+        csrf_enabled=csrf_enabled,
+    )
+    # return {"status": "ok"}

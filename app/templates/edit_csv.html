@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% from "_macros/components.html" import accordion_button, custom_link %}
+
+{% block title %}Edit CSV{% endblock %}
+
+{% block content %}
+<style>
+	.csv-input {
+		display: inline-block;
+		width: auto;
+		min-width: 50px;
+	}
+</style>
+<div class="container-fluid mt-4">
+	<h3>Edit CSV File</h3>
+	{% if data %}
+	<form method="post" action="{{ url_for('auth.edit_csv', file=file) }}">
+		{% if csrf_enabled %}
+		{{ csrf_token() }}
+		{% endif %}
+		<div class="table-responsive" style="max-height: 700px; overflow-y: auto; overflow-x: auto;">
+			<table class="table table-success table-striped">
+				<thead class="table-dark">
+					<tr>
+						{% for n in headers %}
+						<th>{{ n }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				{% for row in data %}
+				{% set row_idx = loop.index0 %}
+				<tr>
+					{% for cell in row %}
+					<td>
+						<input type="text" class="form-control csv-input" name="cell_{{ row_idx }}_{{ loop.index0 }}"
+							style="background: transparent; border: none; outline: none; color: inherit;" value="{{ cell }}">
+					</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+		<button type="submit" class="btn btn-primary mt-3">Save</button>
+	</form>
+	{% else %}
+	<p>No file selected.</p>
+	{% endif %}
+</div>
+<script nonce={{ csp_nonce }}>
+</script>
+
+{% endblock %}

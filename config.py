@@ -17,6 +17,8 @@ class Config:
     REMEMBER_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
+    # base dir for csv files
+    CSV_BASE_DIR = os.getenv("CSV_BASE_DIR", "/home/cameron/website/temp")
 
 
 class RedisConfig(Config):
