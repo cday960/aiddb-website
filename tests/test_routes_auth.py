@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
 from util.crypto_utils import encrypt_string, decrypt_string
 from util.custom_sql_class import SQLConnection
+from cryptography.fernet import InvalidToken
 
 """
 TODO:
@@ -63,19 +64,30 @@ def test_logout_post_clears_session_and_redirects(client):
     assert "/login" in response.headers["Location"]
 
 
-# @patch("app.routes.auth_routes.SQLUtilities")
-# def test_index_logged_in(mock_sql_util, client, fake_encrypted_password):
-#     # set session data like a user is logged in
-#     with client.session_transaction() as sess:
-#         sess["db_username"] = "test_user"
-#         sess["db_password"] = fake_encrypted_password
-#
-#     # mock query result
-#     mock_instance = MagicMock()
-#     mock_instance.query.return_value = [("mock row",)]
-#     mock_sql_util.return_value.__enter__.return_value = mock_sql_util
-#
-#     response = client.get("/")
-#
-#     assert response.status_code == 200
-#     assert b"static page" in response.data
+@patch("app.routes.auth_routes.SQLConnection")
+def test_login_post_valid(mock_sql_conn, client):
+    mock_instance = mock_sql_conn.return_value
+    mock_instance.connect.return_value = True
+    response = client.post(
+        "/login",
+        data={"username": "valid", "password": "secret"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code in (301, 302)
+    assert response.headers["Location"].endswith("/")
+    with client.session_transaction() as sess:
+        assert sess["db_username"] == "valid"
+        assert "db_password" in sess
+
+
+@patch("app.lib.decorators.decrypt_string", side_effect=InvalidToken)
+def test_requires_login_invalid_token_redirects(mock_decrypt, client):
+    with client.session_transaction() as sess:
+        sess["db_username"] = "u"
+        sess["db_password"] = "bad"
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (301, 302)
+    assert "/login" in response.headers["Location"]
+    with client.session_transaction() as sess:
+        assert sess.get("db_username") is None

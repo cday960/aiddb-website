@@ -1,4 +1,4 @@
-from app.dao.mssql_dao import rows_to_dicts, select_with_columns
+from app.dao.mssql_dao import rows_to_dicts, select_with_columns, get_top_people
 from tests.fake_db import FakeDB
 
 
@@ -13,3 +13,10 @@ def test_select_with_columns():
     rows, cols = select_with_columns(db, "SELECT 1")
     assert rows == [(1,)]
     assert cols == ["x"]
+
+
+def test_get_top_people_uses_limit():
+    db = FakeDB()
+    get_top_people(db, limit=5)
+    query, _ = db.queries[0]
+    assert "top 5" in query.lower()
