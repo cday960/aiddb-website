@@ -7,9 +7,21 @@
 {% block content %}
 <style>
 	.csv-input {
-		display: inline-block;
-		width: auto;
-		min-width: 50px;
+		display: inline-block !important;
+		width: auto !important;
+		height: 17px;
+		line-height: 17px;
+		padding: 2px 6px;
+		font-size: 15px;
+		background: transparent;
+		border: none;
+		outline: none;
+		color: inherit;
+	}
+
+	tr td:last-child {
+		width: 1%;
+		white-space: nowrap;
 	}
 </style>
 <div class="container-fluid mt-4">
@@ -17,15 +29,15 @@
 	{% if data %}
 	<form method="post" action="{{ url_for('auth.edit_csv', file=file) }}">
 		{% if csrf_enabled %}
-		{{ csrf_token() }}
 		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 		{% endif %}
 		<div class="table-responsive" style="max-height: 700px; overflow-y: auto; overflow-x: auto;">
-			<table class="table table-success table-striped">
+			<table class="table table-success table-striped w-auto"
+				style="table-layout: auto; white-space: nowrap; display: inline-table;">
 				<thead class="table-dark">
 					<tr>
 						{% for n in headers %}
-						<th>{{ n }}</th>
+						<th style="text-align: center;">{{ n }}</th>
 						{% endfor %}
 					</tr>
 				</thead>
@@ -34,8 +46,8 @@
 				<tr>
 					{% for cell in row %}
 					<td>
-						<input type="text" class="form-control csv-input" name="cell_{{ row_idx }}_{{ loop.index0 }}"
-							style="background: transparent; border: none; outline: none; color: inherit;" value="{{ cell }}">
+						<input type="text" class="csv-input" name="cell_{{ row_idx }}_{{ loop.index0 }}" value="{{ cell }}"
+							size="{{ (('' ~ cell)|length) or 1}}" oninput="this.size = Math.max(this.value.length, 1)">
 					</td>
 					{% endfor %}
 				</tr>

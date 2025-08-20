@@ -149,14 +149,18 @@ def edit_csv():
                 c = int(c)
                 col = max(col, c)
 
-        row = int((len(request.form) + 1) / (col + 1)) - 1
+        col = col + 1
+        row = int((len(request.form) + 1) / (col))
         print(f"Cols: {col}\nRows: {row}")
 
-        for i in range(10):
+        for i in range(row):
             row = []
-            for j in range(20):
+            for j in range(col):
                 row.append(request.form[f"cell_{i}_{j}"].lstrip())
             data.append(row)
+
+        for n in data:
+            print(n)
 
     if os.path.exists(full_path):
         with open(full_path, newline="") as f:
