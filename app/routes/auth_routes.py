@@ -26,6 +26,10 @@ def login():
     form = LoginForm()
     error = None
 
+    next_page = request.args.get("next")
+    if request.method == "GET" and next_page:
+        redirect_target = next_page
+
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
@@ -43,6 +47,8 @@ def login():
                 session["db_username"] = username
                 session["db_password"] = encrypt_string(password)
                 session.permanent = True
+                if next_page:
+                    return redirect(next_page)
                 return redirect(url_for("auth.index"))
             else:
                 error = "Login failed. Please check credentials."
@@ -109,6 +115,7 @@ def auditor():
 
 
 @auth_bp.route("/csv/edit", methods=["GET", "POST"])
+@requires_login
 def edit_csv():
     base_dir = current_app.config.get("CSV_BASE_DIR", "./temp")
     file_path = base_dir + "/test_file.csv"

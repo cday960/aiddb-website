@@ -16,8 +16,8 @@ def status():
     return jsonify({"status": "ok"})
 
 
-@requires_login
 @api_bp.route("/example")
+@requires_login
 def example():
     db = get_db()
 
@@ -42,6 +42,13 @@ def example():
             and psn.studentNumber is not null;
     """
 
-    result = db.query(query)
+    rows, cols = db.query_with_columns(query)
 
-    return jsonify({"result": result})
+    data = []
+
+    for n in rows:
+        data.append(dict(zip(cols, n)))
+
+    print(data)
+
+    return jsonify({"data": data})

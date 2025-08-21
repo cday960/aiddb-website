@@ -81,6 +81,26 @@ def test_login_post_valid(mock_sql_conn, client):
         assert "db_password" in sess
 
 
+@patch("app.routes.auth_routes.SQLConnection")
+def test_login_redirects_to_next_page(mock_sql_conn, client):
+    response = client.get("/csv/edit", follow_redirects=False)
+    assert response.status_code in (301, 302)
+    assert "/login" in response.headers["Location"]
+    assert "next=/csv/edit" in response.headers["Location"]
+
+    mock_instance = mock_sql_conn.return_value
+    mock_instance.connect.return_value = True
+
+    response = client.post(
+            "/login?next=/csv/edit",
+            data={"username": "valid", "password": "secret"},
+            follow_redirects=False,
+            )
+
+    assert response.status_code in (301, 302)
+    assert response.headers["Location"].endswith("/csv/edit")
+
+
 @patch("app.lib.decorators.decrypt_string", side_effect=InvalidToken)
 def test_requires_login_invalid_token_redirects(mock_decrypt, client):
     with client.session_transaction() as sess:
