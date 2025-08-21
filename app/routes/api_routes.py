@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from app.lib.decorators import requires_login
+from app.lib.decorators import requires_login, requires_api_login
 from app.services.session_db import get_db
 
 
@@ -17,7 +17,7 @@ def status():
 
 
 @api_bp.route("/example")
-@requires_login
+@requires_api_login
 def example():
     db = get_db()
 
