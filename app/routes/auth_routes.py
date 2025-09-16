@@ -246,11 +246,48 @@ def run_missing_grade_level_tool(df):
         "FirstName",
         "LocCourseNum",
         "LocCourseName",
+        "AssignNum",
     ]
 
     occur, users = create_mask("CourseGradeLevel", df, identifiers)
 
     export_df = create_export_df(occur, identifiers)
+    return export_df
+
+
+def run_missing_course_num(df):
+    identifiers = [
+        "LastName",
+        "FirstName",
+        "AssignNum",
+        "LocCourseNum",
+        "LocCourseName",
+    ]
+    occur, users = create_mask("CourseNum", df, identifiers)
+
+    elementary_loc_course_nums = [
+        "GRKD",
+        "GR01",
+        "GR02",
+        "GR03",
+        "GR04",
+        "GR05",
+        "ATTT1",
+        "ATTT1-AM",
+        "ATTT1-PM",
+        "ATTPK",
+    ]
+
+    no_elem = {}
+    for key, value in occur.items():
+        if key[3] not in elementary_loc_course_nums:
+            # occur.pop(key)
+            no_elem[key] = value
+
+    for n in occur:
+        print(n)
+
+    export_df = create_export_df(no_elem, identifiers)
     return export_df
 
 
@@ -304,6 +341,14 @@ def run_missing_edssn(df):
     return export_df
 
 
+def run_missing_course_sem(df):
+    return 0
+
+
+def run_duplicate_assign_num(df):
+    return 0
+
+
 COURSE_ASSIGN_TOOLS = {
     "missing_course_grade_level": {
         "label": "Missing CourseGradeLevel",
@@ -319,12 +364,35 @@ COURSE_ASSIGN_TOOLS = {
         "runner": run_missing_edssn,
         "form_field": "missing_edssn",
     },
+    "missing_course_num": {
+        "label": "Missing CourseNum",
+        "title": "Rows missing CourseNum",
+        "empty_message": "No rows are missing CourseNum.",
+        "runner": run_missing_course_num,
+        "form_field": "missing_course_num",
+    },
+    "missing_course_sem": {
+        "label": "Missing CourseSem",
+        "title": "Rows missing CourseSem",
+        "empty_message": "No rows are missing CourseSem.",
+        "runner": run_missing_course_sem,
+        "form_field": "missing_course_sem",
+    },
+    "duplicate_assign_num": {
+        "label": "Duplicate AssignNum",
+        "title": "Rows with duplicated AssignNums",
+        "empty_message": "No duplicate AssignNums.",
+        "runner": run_duplicate_assign_num,
+        "form_field": "duplicate_assign_num",
+    },
 }
 
 
 def determine_tool(form):
     for key, config in COURSE_ASSIGN_TOOLS.items():
         field_name = config["form_field"]
+        # getattr returns the button itself, so if the button was not pressed,
+        # there will be no data and the if condition fails.
         field = getattr(form, field_name, None)
         if field is not None and field.data:
             return key
@@ -359,7 +427,7 @@ def course_assign_validation():
 
     # --- FILE UPLOAD ---
     if form.validate_on_submit():
-        print("File uploaded!")
+        current_app.logger.info("CSV file uploaded.")
         tool_key = determine_tool(form)
         if not tool_key:
             flash("Please choose a tool to run.", "warning")
@@ -368,10 +436,13 @@ def course_assign_validation():
             try:
                 file_storage.stream.seek(0)
                 df = pd.read_csv(file_storage.stream, converters={"EDSSN": str})
+
                 results = execute_course_assign_tool(tool_key, df)
                 results["filename"] = file_storage.filename
-                for key, value in results.items():
-                    print(key, value)
+
+                # for key, value in results.items():
+                #     print(key, value)
+
             except KeyError as exc:
                 missing_column = exc.args[0] if exc.args else "requried column"
                 current_app.logger.warning(
@@ -398,4 +469,4 @@ def course_assign_validation():
             for error in field_errors:
                 flash(error, "danger")
 
-    return render_template("course_assign_tools.html", form=form)
+    return render_template("course_assign_tools.html", form=form, results=results)

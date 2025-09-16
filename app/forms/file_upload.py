@@ -9,6 +9,9 @@ class UploadForm(FlaskForm):
     # submit = SubmitField("Upload File")
     missing_course_grade_level = SubmitField("Missing CourseGradeLevel")
     missing_edssn = SubmitField("Missing EDSSN")
+    missing_course_num = SubmitField("Missing CourseNum")
+    missing_course_sem = SubmitField("Missing CourseSem")
+    duplicate_assign_num = SubmitField("Duplicate AssignNum")
 
 
 class ToolForm(FlaskForm):
