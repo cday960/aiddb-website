@@ -6,7 +6,9 @@ from wtforms.validators import DataRequired
 
 class UploadForm(FlaskForm):
     file = FileField("Course Assign File", validators=[FileRequired()])
-    submit = SubmitField("Upload File")
+    # submit = SubmitField("Upload File")
+    missing_course_grade_level = SubmitField("Missing CourseGradeLevel")
+    missing_edssn = SubmitField("Missing EDSSN")
 
 
 class ToolForm(FlaskForm):

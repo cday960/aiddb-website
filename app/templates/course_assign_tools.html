@@ -7,30 +7,25 @@
 {% block content %}
 <div class="container text-center justify-content-center">
 	<h3>Course Assign Validation Tools</h3>
-	<div class="row">
-		<form method="POST" enctype="multipart/form-data">
-			{{ upload_form.csrf_token }}
-			{% set file_label = upload_form.file.label(class="form-label") %}
+	<form method="POST" enctype="multipart/form-data">
+		<div class="row">
+			{{ form.csrf_token }}
+			{% set file_label = form.file.label(class="form-label") %}
 			{{ file_label }}
-			{% set file_form = upload_form.file(class="form-control") %}
+			{% set file_form = form.file(class="form-control") %}
 			{{ file_form }}
-			{% set submit_button = upload_form.submit(class="btn btn-primary mt-2") %}
-			{{ submit_button }}
-		</form>
-	</div>
-	<!-- <form method="POST" -->
-	<div class="row">
-		{% for tool in tool_forms %}
-		<div class="col-4 align-self-center mt-2">
-			<form method="POST" class="d-inline" action="{{ url_for('auth.course_assign_validation') }}">
-				{{ tool.form.hidden_tag() }}
-				<button type="submit" name="{{ tool.key }}" class="form-control">
-					{{ tool.label }}
-				</button>
-			</form>
 		</div>
-		{% endfor %}
-	</div>
+		<!-- <form method="POST" -->
+		<div class="row mt-2">
+			<div class="col-2 align-self-center mt-2">
+				{{ form.missing_course_grade_level(class="btn btn-outline-primary") }}
+			</div>
+
+			<div class="col-3 align-self-center mt-2">
+				{{ form.missing_edssn(class="btn btn-outline-primary") }}
+			</div>
+		</div>
+	</form>
 </div>
 
 

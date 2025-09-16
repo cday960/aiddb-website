@@ -240,52 +240,162 @@ def create_export_df(occur, identifiers):
     return export_df
 
 
+def run_missing_grade_level_tool(df):
+    identifiers = [
+        "LastName",
+        "FirstName",
+        "LocCourseNum",
+        "LocCourseName",
+    ]
+
+    occur, users = create_mask("CourseGradeLevel", df, identifiers)
+
+    export_df = create_export_df(occur, identifiers)
+    return export_df
+
+
+def run_missing_edssn(df):
+    identifiers = ["LastName", "FirstName"]
+    occur, users = create_mask("EDSSN", df, identifiers)
+    users_list_no_dupes = users.drop_duplicates().values.tolist()
+
+    db = get_db()
+
+    pairs_sql = ", ".join(["(?, ?)"] * len(users_list_no_dupes))
+    sql = f"""--sql
+    select p.staffNumber, i.lastName, i.firstName
+    from [Person] as p
+    join [Identity] as i
+        on i.identityID = p.currentIdentityID
+    join (values {pairs_sql}) as v(lastName, firstName)
+        on i.firstName = v.firstName
+        and i.lastName = v.lastName
+    where p.staffNumber is not null;
+    """
+    params = [x for fn, ln in users_list_no_dupes for x in (fn, ln)]
+    result = db.query(sql, params)
+
+    final = {}
+    for n in result:
+        name = (n[1], n[2])
+        if n[0][0].lower() == "s":
+            edssn = n[0]
+        else:
+            edssn = "000" + n[0][1:]
+        final[name] = [edssn, occur[name]]
+
+    export_list = []
+    for key, value in final.items():
+        export_list.append(
+            [
+                key[0],
+                key[1],
+                f"{key[0]}, {key[1]}",
+                value[0],
+                ", ".join(str(item) for item in value[1]),
+            ]
+        )
+
+    headers = ["LastName", "FirstName", "IC Name", "EDSSN", "Occurences"]
+
+    export_df = pd.DataFrame(export_list)
+    export_df.columns = headers
+
+    return export_df
+
+
+COURSE_ASSIGN_TOOLS = {
+    "missing_course_grade_level": {
+        "label": "Missing CourseGradeLevel",
+        "title": "Rows missing CourseGradeLevel",
+        "empty_message": "No rows are missing CourseGradeLevel.",
+        "runner": run_missing_grade_level_tool,
+        "form_field": "missing_course_grade_level",
+    },
+    "missing_edssn": {
+        "label": "Missing EDSSN",
+        "title": "Rows missing EDSSN",
+        "empty_message": "No rows are missing EDSSN.",
+        "runner": run_missing_edssn,
+        "form_field": "missing_edssn",
+    },
+}
+
+
+def determine_tool(form):
+    for key, config in COURSE_ASSIGN_TOOLS.items():
+        field_name = config["form_field"]
+        field = getattr(form, field_name, None)
+        if field is not None and field.data:
+            return key
+    return None
+
+
+def execute_course_assign_tool(tool_key, df):
+    tool_config = COURSE_ASSIGN_TOOLS.get(tool_key)
+    if not tool_config:
+        raise KeyError(tool_key)
+
+    result_df = tool_config["runner"](df)
+    columns = result_df.columns.to_list()
+    rows = result_df.to_dict(orient="records")
+
+    return {
+        "tool": tool_key,
+        "label": tool_config["label"],
+        "title": tool_config["title"],
+        "columns": columns,
+        "rows": rows,
+        "count": len(rows),
+        "empty_message": tool_config.get("empty_message"),
+    }
+
+
 @auth_bp.route("/course_assign", methods=["GET", "POST"])
 @requires_login
 def course_assign_validation():
-    # print(request.form)
-    upload_form = UploadForm()
-    tool_form = ToolForm()
+    form = UploadForm()
+    results = None
 
-    if request.method == "POST":
-        # --- TOOLS ---
-        if "tool" in request.form:
-            tool_keys = request.form.keys()
-            print(tool_keys)
-            if "CourseGradeLevel" in tool_keys:
-                print("Running operations for CourseGradeLevel validation.")
-            if "EDSSN" in tool_keys:
-                print("Running operations for EDSSN validation.")
+    # --- FILE UPLOAD ---
+    if form.validate_on_submit():
+        print("File uploaded!")
+        tool_key = determine_tool(form)
+        if not tool_key:
+            flash("Please choose a tool to run.", "warning")
+        else:
+            file_storage = form.file.data
+            try:
+                file_storage.stream.seek(0)
+                df = pd.read_csv(file_storage.stream, converters={"EDSSN": str})
+                results = execute_course_assign_tool(tool_key, df)
+                results["filename"] = file_storage.filename
+                for key, value in results.items():
+                    print(key, value)
+            except KeyError as exc:
+                missing_column = exc.args[0] if exc.args else "requried column"
+                current_app.logger.warning(
+                    "Course Assign tool '%s' missing required column: %s",
+                    tool_key,
+                    missing_column,
+                )
+                flash(
+                    f"The uploaded file is missing the '{missing_column}' column required by this tool.",
+                    "danger",
+                )
+            except Exception as exc:
+                current_app.logger.exception(
+                    "Failed to run Course Assign tool '%s': %s",
+                    tool_key,
+                    exc,
+                )
+                flash(
+                    "Unable to process the uploaded file. Please verify that it is a valid CSV export.",
+                    "danger",
+                )
+    elif request.method == "POST":
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                flash(error, "danger")
 
-        # --- FILE UPLOAD ---
-        if upload_form.validate_on_submit():
-            print("File uploaded!")
-            file = upload_form.file.data
-            filename = secure_filename(file.filename)
-
-            df = pd.read_csv(file, converters={"EDSSN": str})
-
-            identifiers = [
-                "LastName",
-                "FirstName",
-                "LocCourseNum",
-                "LocCourseName",
-            ]
-
-            occur, users = create_mask("CourseGradeLevel", df, identifiers)
-
-            export_df = create_export_df(occur, identifiers)
-            # print(export_df)
-
-    tools = {
-        "CourseGradeLevel": "Missing CourseGradeLevel Fields",
-        "EDSSN": "Missing EDSSN Numbers",
-        "DupeAssignNum": "Duplicate AssignNum Fields",
-        "CourseNum": "Missing CourseNums",
-        "CourseSem": "Missing CourseSems",
-    }
-    tool_forms = [{"key": x, "label": y, "form": ToolForm()} for x, y in tools.items()]
-
-    return render_template(
-        "course_assign_tools.html", upload_form=upload_form, tool_forms=tool_forms
-    )
+    return render_template("course_assign_tools.html", form=form)
