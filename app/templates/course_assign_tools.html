@@ -8,14 +8,23 @@
 <div class="container-fluid mt-4">
 	<h3>Course Assign Validation Tools</h3>
 	<form method="POST" enctype="multipart/form-data">
-		{{ form.csrf_token }}
-		{% set file_label = form.file.label(class="form-label") %}
+		{{ upload_form.csrf_token }}
+		{% set file_label = upload_form.file.label(class="form-label") %}
 		{{ file_label }}
-		{% set file_form = form.file(class="form-control") %}
+		{% set file_form = upload_form.file(class="form-control") %}
 		{{ file_form }}
-		{% set submit_button = form.submit(class="btn btn-primary") %}
+		{% set submit_button = upload_form.submit(class="btn btn-primary") %}
 		{{ submit_button }}
 	</form>
+	<!-- <form method="POST" -->
+	{% for tool in tool_forms %}
+	<form method="POST" class="d-inline" action="{{ url_for('auth.course_assign_validation') }}">
+		{{ tool.form.hidden_tag() }}
+		<button type="submit" name="{{ tool.key }}" class="form-control">
+			{{ tool.label }}
+		</button>
+	</form>
+	{% endfor %}
 </div>
 
 <script nonce={{ csp_nonce }}>

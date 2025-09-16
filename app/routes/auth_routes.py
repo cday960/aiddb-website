@@ -10,7 +10,7 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 from app.forms.login_form import LoginForm
-from app.forms.file_upload import UploadForm
+from app.forms.file_upload import UploadForm, ToolForm
 from app.services.db_service import list_people
 from app.services.session_db import get_db
 from util.custom_sql_class import SQLConnection
@@ -243,11 +243,24 @@ def create_export_df(occur, identifiers):
 @auth_bp.route("/course_assign", methods=["GET", "POST"])
 @requires_login
 def course_assign_validation():
-    form = UploadForm()
+    # print(request.form)
+    upload_form = UploadForm()
+    tool_form = ToolForm()
 
     if request.method == "POST":
-        if form.validate_on_submit():
-            file = form.file.data
+        # --- TOOLS ---
+        if "tool" in request.form:
+            tool_keys = request.form.keys()
+            print(tool_keys)
+            if "CourseGradeLevel" in tool_keys:
+                print("Running operations for CourseGradeLevel validation.")
+            if "EDSSN" in tool_keys:
+                print("Running operations for EDSSN validation.")
+
+        # --- FILE UPLOAD ---
+        if upload_form.validate_on_submit():
+            print("File uploaded!")
+            file = upload_form.file.data
             filename = secure_filename(file.filename)
 
             df = pd.read_csv(file, converters={"EDSSN": str})
@@ -262,5 +275,17 @@ def course_assign_validation():
             occur, users = create_mask("CourseGradeLevel", df, identifiers)
 
             export_df = create_export_df(occur, identifiers)
-            print(export_df)
-    return render_template("course_assign_tools.html", form=form)
+            # print(export_df)
+
+    tools = {
+        "CourseGradeLevel": "Missing CourseGradeLevel Fields",
+        "EDSSN": "Missing EDSSN Numbers",
+        "DupeAssignNum": "Duplicate AssignNum Fields",
+        "CourseNum": "Missing CourseNums",
+        "CourseSem": "Missing CourseSems",
+    }
+    tool_forms = [{"key": x, "label": y, "form": ToolForm()} for x, y in tools.items()]
+
+    return render_template(
+        "course_assign_tools.html", upload_form=upload_form, tool_forms=tool_forms
+    )
