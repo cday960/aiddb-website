@@ -8,7 +8,9 @@ from flask import (
     url_for,
     request,
 )
+from werkzeug.utils import secure_filename
 from app.forms.login_form import LoginForm
+from app.forms.file_upload import UploadForm
 from app.services.db_service import list_people
 from app.services.session_db import get_db
 from util.custom_sql_class import SQLConnection
@@ -17,6 +19,7 @@ from app.lib.decorators import requires_login
 
 import os
 import csv
+import pandas as pd
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -192,3 +195,72 @@ def edit_csv():
         file=file_path,
         csrf_enabled=csrf_enabled,
     )
+
+
+def create_mask(field: str, df: pd.DataFrame, identifiers: list[str]):
+    """
+    Applies a mask for a dataframe given a string field/column.
+    Returns a dictionary that has a first and last name key, and the
+    value is a list of indexes where the given field is not present.
+    """
+    mask = df[field].isna() | df[field].astype(str).str.strip().eq("")
+
+    missing_rows = df[mask]
+    missing_idx = missing_rows.index
+
+    users = missing_rows[identifiers]
+
+    occur = {}
+
+    for n in zip(missing_idx, users.values.tolist()):
+        name = tuple([n for n in n[1]])
+        if name not in occur:
+            occur[name] = [n[0] + 2]
+        else:
+            occur[name].append(n[0] + 2)
+
+    return (occur, users)
+
+
+def create_export_df(occur, identifiers):
+    export_list = []
+    for key, value in occur.items():
+        occ = str(value[0])
+        if len(value) > 1:
+            occ = ", ".join(str(item) for item in value)
+        temp = [x for x in key]
+        temp.append(occ)
+        export_list.append(temp)
+
+    export_df = pd.DataFrame(export_list)
+    cols = identifiers
+    cols.append("Occurrences")
+    export_df.columns = cols
+
+    return export_df
+
+
+@auth_bp.route("/course_assign", methods=["GET", "POST"])
+@requires_login
+def course_assign_validation():
+    form = UploadForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            file = form.file.data
+            filename = secure_filename(file.filename)
+
+            df = pd.read_csv(file, converters={"EDSSN": str})
+
+            identifiers = [
+                "LastName",
+                "FirstName",
+                "LocCourseNum",
+                "LocCourseName",
+            ]
+
+            occur, users = create_mask("CourseGradeLevel", df, identifiers)
+
+            export_df = create_export_df(occur, identifiers)
+            print(export_df)
+    return render_template("course_assign_tools.html", form=form)

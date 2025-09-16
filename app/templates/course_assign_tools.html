@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% from "_macros/components.html" import accordion_button, custom_link %}
+
+{% block title %}Course Assign Tools{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+	<h3>Course Assign Validation Tools</h3>
+	<form method="POST" enctype="multipart/form-data">
+		{{ form.csrf_token }}
+		{% set file_label = form.file.label(class="form-label") %}
+		{{ file_label }}
+		{% set file_form = form.file(class="form-control") %}
+		{{ file_form }}
+		{% set submit_button = form.submit(class="btn btn-primary") %}
+		{{ submit_button }}
+	</form>
+</div>
+
+<script nonce={{ csp_nonce }}>
+</script>
+
+{% endblock %}
